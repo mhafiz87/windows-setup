@@ -288,5 +288,52 @@ rename-item "$env:localappdata\$temp" "$env:localappdata\neovim"
 [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\neovim\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 Remove-Item $app
 ```
+
+### PowerToys
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\powertoys.exe"
+$repo = "microsoft/PowerToys"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/v$version/PowerToysUserSetup-$version-x64.exe" -outfile (new-item -path "$app" -force)
+start-process -filepath "$app" -args "/quiet /passive" -wait
+Remove-Item $app
+```
+
 </details>
 
+## Gitlab Via Docker
+
+1. Create GITLAB_HOME environment variable
+
+  ```powershell
+  [Environment]::SetEnvironmentVariable('GITLAB_HOME', 'D:\.gitlab', 'user')
+  ```
+
+2. Create docker container
+
+  ```powershell
+  docker run --detach --hostname 127.0.0.1 
+  --publish <external_url_port>:<external_url_port> --publish <gitlab_shell_ssh_port>:22 --name gitlab 
+  --restart always --volume$env:GITLAB_HOME\config:/etc/gitlab 
+  --volume $env:GITLAB_HOME\logs:/var/log/gitlab 
+  --volume $env:GITLAB_HOME\data:/var/opt/gitlab gitlab/gitlab-ce:latest
+  ```
+
+3. Install vim in docker container. Edit /etc/gitlab/gitlab.rb, modify `external_url "http://your-ip-address:external_url_port"`, `gitlab_rails['gitlab_shell_ssh_port'] = gitlab_shell_ssh_port`
+
+  ```bash
+  docker exec -it bash
+  apt install -y vim
+  vim /etc/gitlab/gitlab.rb
+  ```
+
+4. Set gitlab root password
+
+  ```bash
+  gitlab-rake "gitlab:password:reset"
+  ```
+
+- References:
+  - [Install gitlab on Windows with Docker](https://stackoverflow.com/a/66357935)
