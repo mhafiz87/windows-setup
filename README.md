@@ -127,3 +127,136 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - https://superuser.com/questions/1347724/how-can-i-add-additional-fonts-to-the-windows-console
   - https://gist.github.com/anthonyeden/0088b07de8951403a643a8485af2709b
   - https://richardspowershellblog.wordpress.com/2008/03/20/special-folders/
+
+## Installing Software(s)
+
+- Ensure powershell already has this fucntion in powershell profile. If not, copy the function to your current terminal.
+
+  ```powershell
+  function get-github-repo-latest-release {
+      param(
+          [Parameter(Mandatory = $true)][string]$repo
+      )
+      $url = "https://github.com/" + $repo + "/releases/latest"
+      $request = [System.Net.WebRequest]::Create($url)
+      $response = $request.GetResponse()
+      $realTagUrl = $response.ResponseUri.OriginalString
+      $version = $realTagUrl.split('/')[-1].Trim('v')
+      return $version
+  }
+  ```
+
+- List of apps:
+  - [x] 7-Zip
+  - [x] Powershell 7
+  - [x] Git
+  - [x] Git - Delta
+  - [x] NodeJS
+  - [x] VSCode
+  - [x] Neovim
+  - [ ] Fastfetch
+  - [ ] Wezterm
+  - [ ] AutoHotKey
+  - [ ] VS Build Tools
+  - [ ] VLC
+  - [ ] Notepad++
+
+
+### 7-Zip
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\7zip.exe"
+$url = 'https://7-zip.org/' + (invoke-webrequest -usebasicparsing -uri 'https://7-zip.org/' `
+  | select-object -expandproperty links `
+  | where-object {($_.outerhtml -match 'download') -and ($_.href -like "a/*") -and ($_.href -like "*-x64.exe")} `
+  | select-object -first 1 | select-object -expandproperty href)
+invoke-webrequest $url -outfile (new-item -path "$app" -force)
+Start-Process -FilePath $app -Args "/S" -Verb RunAs -Wait
+Remove-Item $app
+```
+
+### Powershell 7
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\powershell.msi"
+$repo = "powershell/powershell"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/v$version/powershell-$version-win-x64.msi" -outfile (new-item -path "$app" -force)
+# iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
+start-process -filepath "$app" -Args "/quiet /passive ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_PATH=1" -Wait
+Remove-Item $app
+```
+
+### Git
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\git.exe"
+$repo = "git-for-windows/git"
+$version = get-github-repo-latest-release "$repo"
+$version = $version -split "\.\D+.+"
+$version = $version.split(" ")[0]
+$url = "https://github.com/$repo/releases/download/v$version.windows.1/Git-$version-64-bit.exe"
+invoke-webrequest "https://github.com/$repo/releases/download/v$version.windows.1/Git-$version-64-bit.exe" -outfile (new-item -path "$app" -force)
+start-process -filepath "$app" -args "/VERYSILENT /NORESTART" -wait
+[System.Environment]::SetEnvironmentVariable('path', "C:\Program Files\Git\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+```
+
+### Git - Delta
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\delta.zip"
+$repo = "dandavison/delta"
+$version = get-github-repo-latest-release "$repo"
+$url = "https://github.com/$repo/releases/download/$version/delta-$version-x86_64-pc-windows-msvc.zip"
+invoke-webrequest $url -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata"
+$temp = get-childitem -path  $env:localappdata -directory -filter "*delta*" | select-object -expandproperty name
+rename-item "$env:localappdata\$temp" "$env:localappdata\delta"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\delta;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+```
+
+### NodeJS
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\node_js.msi"
+$url = (invoke-webrequest -usebasicparsing -uri "https://nodejs.org/en" `
+  | select-object -expandproperty links `
+  | where-object {($_.outerhtml -match "LTS")} `
+  | select-object -first 1 `
+  | select-object -expandproperty href).replace(".tar.gz", "-x64.msi")
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+start-process -filepath "msiexec.exe" -args "/i $app /qn /l* $root_download\software\node-log.txt" -wait
+Remove-Item $app
+```
+
+### VS Code
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\vscode.exe"
+invoke-webrequest "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" -outfile (new-item -path "$app" -force)
+start-process -filepath "$app" -args "/verysilent /norestart /mergetasks=addcontextmenufiles,addcontextmenufolders,!runcode,!desktopicon" -wait
+Remove-Item $app
+```
+
+### Neovim
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\neovim.zip"
+$repo = "neovim/neovim"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/v$version/nvim-win64.zip" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata"
+$temp = get-childitem -path  $env:localappdata -directory -filter "*nvim-win64*" | select-object -expandproperty name
+rename-item "$env:localappdata\$temp" "$env:localappdata\neovim"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\neovim\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+```
