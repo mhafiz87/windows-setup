@@ -10,10 +10,21 @@
     - [Settings](#settings)
     - [Add Webpage To Host](#add-webpage-to-host)
     - [Fonts](#fonts)
+  - [Installing Software(s)](#installing-softwares)
+    - [7-Zip](#7-zip)
+    - [Powershell 7](#powershell-7)
+    - [Git](#git)
+    - [Git - Delta](#git---delta)
+    - [NodeJS](#nodejs)
+    - [VS Code](#vs-code)
+    - [Neovim](#neovim)
 
 </details>
 
 ## Base Configuration
+
+<details>
+<summary>Configuration</summary>
 
 ### Enable powershell script execution
 
@@ -128,7 +139,14 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - https://gist.github.com/anthonyeden/0088b07de8951403a643a8485af2709b
   - https://richardspowershellblog.wordpress.com/2008/03/20/special-folders/
 
+
+</details>
+
+
 ## Installing Software(s)
+
+<details>
+<summary>Installing Software(s)</summary>
 
 - Ensure powershell already has this fucntion in powershell profile. If not, copy the function to your current terminal.
 
@@ -154,13 +172,23 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - [x] NodeJS
   - [x] VSCode
   - [x] Neovim
+  - [ ] Docker Desktop
   - [ ] Fastfetch
   - [ ] Wezterm
   - [ ] AutoHotKey
   - [ ] VS Build Tools
   - [ ] VLC
   - [ ] Notepad++
-
+  - [ ] bitwarden
+  - [ ] cygwin
+  - [ ] clink (cmd)
+  - [ ] powertoys
+  - [ ] ripgrep
+   - [ ] jq
+   - [ ] fzf
+   - [ ] bat
+   - [ ] pyenv (python)
+   - [ ] uv (python)
 
 ### 7-Zip
 
@@ -260,3 +288,5 @@ rename-item "$env:localappdata\$temp" "$env:localappdata\neovim"
 [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\neovim\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 Remove-Item $app
 ```
+</details>
+
