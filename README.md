@@ -314,10 +314,10 @@ Remove-Item $app
 2. Create docker container
 
   ```powershell
-  docker run --detach --hostname 127.0.0.1 
-  --publish <external_url_port>:<external_url_port> --publish <gitlab_shell_ssh_port>:22 --name gitlab 
-  --restart always --volume$env:GITLAB_HOME\config:/etc/gitlab 
-  --volume $env:GITLAB_HOME\logs:/var/log/gitlab 
+  docker run --detach --hostname 127.0.0.1 `
+  --publish <external_url_port>:<external_url_port> --publish <gitlab_shell_ssh_port>:22 --name gitlab `
+  --restart always --volume $env:GITLAB_HOME\config:/etc/gitlab `
+  --volume $env:GITLAB_HOME\logs:/var/log/gitlab `
   --volume $env:GITLAB_HOME\data:/var/opt/gitlab gitlab/gitlab-ce:latest
   ```
 
