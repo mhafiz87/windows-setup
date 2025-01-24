@@ -327,6 +327,7 @@ Remove-Item $app
   docker exec -it bash
   apt install -y vim
   vim /etc/gitlab/gitlab.rb
+  gitlab-ctl reconfigure
   ```
 
 4. Set gitlab root password
