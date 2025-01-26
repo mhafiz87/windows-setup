@@ -344,7 +344,27 @@ Remove-Item $app
   gitlab-ctl reconfigure
   ```
 
-4. Set gitlab root password
+4. Modify /etc/gitlab/gitlab.rb for gmail smtp:
+
+  ```bash
+  gitlab_rails['smtp_enable'] = true
+  gitlab_rails['smtp_address'] = "smtp.gmail.com"
+  gitlab_rails['smtp_port'] = 587
+  gitlab_rails['smtp_user_name'] = "<gmail email>"
+  gitlab_rails['smtp_password'] = "<gmail app password>"
+  gitlab_rails['smtp_domain'] = "smtp.gmail.com"
+  gitlab_rails['smtp_authentication'] = "login"
+  gitlab_rails['smtp_enable_starttls_auto'] = true
+  gitlab_rails['smtp_tls'] = false
+
+  gitlab_rails['gitlab_email_enabled'] = true
+
+  gitlab_rails['gitlab_email_from'] = '<gmail email>'
+  gitlab_rails['gitlab_email_display_name'] = '<your name>'
+  gitlab_rails['gitlab_email_reply_to'] = '<gmail email>'
+```
+
+5. Set gitlab root password
 
   ```bash
   gitlab-rake "gitlab:password:reset[root]"
@@ -352,3 +372,5 @@ Remove-Item $app
 
 - References:
   - [Install gitlab on Windows with Docker](https://stackoverflow.com/a/66357935)
+  - [YouTube: Gmail SMTP Server Settings: Host Username and Password for Projects](https://www.youtube.com/watch?v=I9x0w8cjR_o)
+  - [Gmail SMTP Settings: Easy Step-by-Step Setup Guide](https://www.gmass.co/blog/gmail-smtp/)
