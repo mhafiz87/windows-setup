@@ -18,6 +18,9 @@
     - [NodeJS](#nodejs)
     - [VS Code](#vs-code)
     - [Neovim](#neovim)
+    - [PowerToys](#powertoys)
+    - [Docker Desktop](#docker-desktop)
+  - [Gitlab Via Docker](#gitlab-via-docker)
 
 </details>
 
@@ -301,6 +304,17 @@ start-process -filepath "$app" -args "/quiet /passive" -wait
 Remove-Item $app
 ```
 
+### Docker Desktop
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\docker.exe"
+$url = (invoke-webrequest -usebasicparsing -uri "https://docs.docker.com/desktop/setup/install/windows-install/" | select-object -expandproperty links | where-object {($_.outerhtml -match "amd64")} | select-object -expandproperty href)
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+start-process -filepath $app -wait install
+Remove-Item $app
+```
+
 </details>
 
 ## Gitlab Via Docker
@@ -324,7 +338,7 @@ Remove-Item $app
 3. Install vim in docker container. Edit /etc/gitlab/gitlab.rb, modify `external_url "http://your-ip-address:external_url_port"`, `gitlab_rails['gitlab_shell_ssh_port'] = gitlab_shell_ssh_port`
 
   ```bash
-  docker exec -it bash
+  docker exec -it gitlab bash
   apt install -y vim
   vim /etc/gitlab/gitlab.rb
   gitlab-ctl reconfigure
@@ -333,7 +347,7 @@ Remove-Item $app
 4. Set gitlab root password
 
   ```bash
-  gitlab-rake "gitlab:password:reset"
+  gitlab-rake "gitlab:password:reset[root]"
   ```
 
 - References:
