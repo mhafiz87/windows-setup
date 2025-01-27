@@ -317,6 +317,83 @@ Remove-Item $app
 
 </details>
 
+
+## Installing Language Server Protocol (LSP)
+
+### LuaLS
+
+```powershell
+$root_download = "$env:userprofile\lsp"
+$lsp = $root_download + "\luals.zip"
+$repo = "LuaLS/lua-language-server"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/$version/lua-language-server-$version-win32-x64.zip" -outfile (new-item -path "$lsp" -force)
+expand-archive -path "$lsp" -destinationpath "$root_download\luals"
+[System.Environment]::SetEnvironmentVariable('path', "$root_download\luals\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $lsp
+```
+
+### Ruff
+
+```powershell
+$root_download = "$env:userprofile\lsp"
+$lsp = $root_download + "\ruff.zip"
+$repo = "astral-sh/ruff"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/$version/ruff-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$lsp" -force)
+expand-archive -path "$lsp" -destinationpath "$root_download\ruff"
+[System.Environment]::SetEnvironmentVariable('path', "$root_download\ruff;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $lsp
+```
+
+### Marksman
+
+```powershell
+$root_download = "$env:userprofile\lsp"
+$lsp = $root_download + "\marksman\marksman.exe"
+$repo = "artempyanykh/marksman"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/$version/marksman.exe" -outfile (new-item -path "$lsp" -force)
+[System.Environment]::SetEnvironmentVariable('path', "$root_download\marksman;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+```
+
+### Stylua
+
+```powershell
+$root_download = "$env:userprofile\lsp"
+$lsp = $root_download + "\stylua.zip"
+$repo = "JohnnyMorganz/StyLua"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/v$version/stylua-windows-x86_64.zip" -outfile (new-item -path "$lsp" -force)
+expand-archive -path "$lsp" -destinationpath "$root_download\stylua"
+[System.Environment]::SetEnvironmentVariable('path', "$root_download\stylua;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $lsp
+```
+
+### Powershell Service Editor
+
+```powershell
+$root_download = "$env:userprofile\lsp"
+$lsp = $root_download + "\PowerShellEditorServices.zip"
+$repo = "PowerShell/PowerShellEditorServices"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/v$version/PowerShellEditorServices.zip" -outfile (new-item -path "$lsp" -force)
+expand-archive -path "$lsp" -destinationpath "$root_download\PowerShellEditorServices"
+Remove-Item $lsp
+```
+
+### Markdownlint (requires npm)
+
+```powershell
+npm install -i -g markdownlint
+```
+
+### Prettier (requires npm)
+
+```powershell
+npm install -i -g prettier
+```
+
 ## Gitlab Via Docker
 
 1. Create GITLAB_HOME environment variable
