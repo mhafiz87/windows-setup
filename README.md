@@ -405,8 +405,10 @@ npm install -i -g prettier
 2. Create docker container
 
   ```powershell
+  $external_url_port = Read-Host "Enter external url port: "
+  $ssh_port = Read-Host "Enter SSH port: "
   docker run --detach --hostname 127.0.0.1 `
-  --publish <external_url_port>:<external_url_port> --publish <gitlab_shell_ssh_port>:22 --name gitlab `
+  --publish ${external_url_port}:${external_url_port} --publish ${ssh_port}:22 --name gitlab `
   --restart always --volume $env:GITLAB_HOME\config:/etc/gitlab `
   --volume $env:GITLAB_HOME\logs:/var/log/gitlab `
   --volume $env:GITLAB_HOME\data:/var/opt/gitlab gitlab/gitlab-ce:latest
@@ -421,14 +423,24 @@ npm install -i -g prettier
   gitlab-ctl reconfigure
   ```
 
+4. Restart docker container:
+
+  ```powershell
+  docker restart docker
+  ```
+
+5. Store your smtp user name and password via docker terminal:
+
+  ```bash
+  gitlab-rake gitlab:smtp:secret:edit EDITOR=vim  
+  ```
+
 4. Modify /etc/gitlab/gitlab.rb for gmail smtp:
 
   ```bash
   gitlab_rails['smtp_enable'] = true
   gitlab_rails['smtp_address'] = "smtp.gmail.com"
   gitlab_rails['smtp_port'] = 587
-  gitlab_rails['smtp_user_name'] = "<gmail email>"
-  gitlab_rails['smtp_password'] = "<gmail app password>"
   gitlab_rails['smtp_domain'] = "smtp.gmail.com"
   gitlab_rails['smtp_authentication'] = "login"
   gitlab_rails['smtp_enable_starttls_auto'] = true
@@ -447,7 +459,15 @@ npm install -i -g prettier
   gitlab-rake "gitlab:password:reset[root]"
   ```
 
+6. To test sending emails, run the following command:
+
+  ```bash
+  gitlab-rails console
+  Notify.test_email("<email-address>", "Test email from Gitlab", "This is a test email from Gitlab!").deliver_now
+  ```
+
 - References:
   - [Install gitlab on Windows with Docker](https://stackoverflow.com/a/66357935)
   - [YouTube: Gmail SMTP Server Settings: Host Username and Password for Projects](https://www.youtube.com/watch?v=I9x0w8cjR_o)
   - [Gmail SMTP Settings: Easy Step-by-Step Setup Guide](https://www.gmass.co/blog/gmail-smtp/)
+  - [Gitlab Omnibus SMTP SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html)
