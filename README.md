@@ -175,7 +175,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - [x] NodeJS
   - [x] VSCode
   - [x] Neovim
-  - [ ] Docker Desktop
+  - [x] Docker Desktop
   - [ ] Fastfetch
   - [ ] Wezterm
   - [ ] AutoHotKey
@@ -187,11 +187,11 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - [ ] clink (cmd)
   - [ ] powertoys
   - [ ] ripgrep
-   - [ ] jq
-   - [ ] fzf
-   - [ ] bat
-   - [ ] pyenv (python)
-   - [ ] uv (python)
+  - [ ] jq
+  - [ ] fzf
+  - [ ] bat
+  - [ ] pyenv (python)
+  - [x] uv (python)
 
 ### 7-Zip
 
@@ -314,6 +314,11 @@ invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
 start-process -filepath $app -wait install
 Remove-Item $app
 ```
+ ### UV (Python)
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
 
 </details>
 
@@ -435,7 +440,7 @@ npm install -i -g prettier
   gitlab-rake gitlab:smtp:secret:edit EDITOR=vim  
   ```
 
-4. Modify /etc/gitlab/gitlab.rb for gmail smtp:
+6. Modify /etc/gitlab/gitlab.rb for gmail smtp:
 
   ```bash
   gitlab_rails['smtp_enable'] = true
@@ -453,13 +458,13 @@ npm install -i -g prettier
   gitlab_rails['gitlab_email_reply_to'] = '<gmail email>'
 ```
 
-5. Set gitlab root password
+7. Set gitlab root password
 
   ```bash
   gitlab-rake "gitlab:password:reset[root]"
   ```
 
-6. To test sending emails, run the following command:
+8. To test sending emails, run the following command:
 
   ```bash
   gitlab-rails console
