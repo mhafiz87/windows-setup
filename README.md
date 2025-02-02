@@ -534,3 +534,4 @@ npm install -i -g prettier
   - [YouTube - How to register & run GitLab Runner inside a Docker container](https://www.youtube.com/watch?v=JLdPiq0owUM)
   - [Run GitLab Runner in a container](https://docs.gitlab.com/runner/install/docker.html)
   - [https://docs.gitlab.com/runner/register/?tab=Docker](https://docs.gitlab.com/runner/register/?tab=Docker)
+  - [Jobs unable to access my gitlab instances](https://forum.gitlab.com/t/jobs-are-unable-to-access-my-gitlab-instance/62060/2)
