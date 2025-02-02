@@ -401,13 +401,13 @@ npm install -i -g prettier
 
 ## Gitlab Via Docker
 
-1. Create GITLAB_HOME environment variable
+- Create GITLAB_HOME environment variable
 
   ```powershell
   [Environment]::SetEnvironmentVariable('GITLAB_HOME', 'D:\.gitlab', 'user')
   ```
 
-2. Create docker container
+- Create docker container
 
   ```powershell
   $external_url_port = Read-Host "Enter external url port: "
@@ -419,7 +419,22 @@ npm install -i -g prettier
   --volume $env:GITLAB_HOME\data:/var/opt/gitlab gitlab/gitlab-ce:latest
   ```
 
-3. Install vim in docker container. Edit /etc/gitlab/gitlab.rb, modify `external_url "http://your-ip-address:external_url_port"`, `gitlab_rails['gitlab_shell_ssh_port'] = gitlab_shell_ssh_port`
+- Check gitlab container ip address.
+
+  - Check IP Address
+    - Find the container ID
+  
+      ```powershell
+      docker ps -a
+      ```
+
+    - Find the IP address; __remove `<` `>`__.
+
+      ``` powershell
+      docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
+      ```
+
+- Install vim in docker container. Edit /etc/gitlab/gitlab.rb, modify `external_url "http://gitlab-container-ip-address:external_url_port"`, `gitlab_rails['gitlab_shell_ssh_port'] = gitlab_shell_ssh_port`
 
   ```bash
   docker exec -it gitlab bash
@@ -428,19 +443,19 @@ npm install -i -g prettier
   gitlab-ctl reconfigure
   ```
 
-4. Restart docker container:
+- Restart docker container:
 
   ```powershell
   docker restart docker
   ```
 
-5. Store your smtp user name and password via docker terminal:
+- Store your smtp user name and password via docker terminal:
 
   ```bash
   gitlab-rake gitlab:smtp:secret:edit EDITOR=vim  
   ```
 
-6. Modify /etc/gitlab/gitlab.rb for gmail smtp:
+- Modify /etc/gitlab/gitlab.rb for gmail smtp:
 
   ```bash
   gitlab_rails['smtp_enable'] = true
@@ -464,7 +479,7 @@ npm install -i -g prettier
   gitlab-rake "gitlab:password:reset[root]"
   ```
 
-8. To test sending emails, run the following command:
+- To test sending emails, run the following command:
 
   ```bash
   gitlab-rails console
