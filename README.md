@@ -492,20 +492,37 @@ gitlab/gitlab-runner:alpine
 - Check IP Address
   - Find the container ID
 
-  ```powershell
-  docker ps -a
-  ```
+    ```powershell
+    docker ps -a
+    ```
 
   - Find the IP address; __remove `<` `>`__.
 
-  ``` powershell
-  docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
-  ```
+    ``` powershell
+    docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
+    ```
 
-- Register `runner`
+- Create runner in gitlab, copy the token, then register `runner`.
 
   ```powershell
   docker run --rm -it -v gitlab-runner-config:/etc/gitlab-runner gitlab/gitlab-runner:alpine register
+  ```
+
+- Modify /etc/gitlab-runner/config.toml in `gitlab-runner` container by adding `clone_url` key under `url` with same value as `url`.
+
+  ```powershell
+  docker exec -it gitlab-runner bash
+  ```
+
+  ```bash
+  vi /etc/gitlab-runner/config.toml
+  exit
+  ```
+
+- Restart `gitlab-runner` docker container.
+
+  ```powershell
+  docker restart gitlab-runner
   ```
 
 - References:
