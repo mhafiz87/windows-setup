@@ -479,15 +479,20 @@ npm install -i -g prettier
 
 ## Gitlab Runner Via Docker
 
+- Create docker volume for gitlab-runner-config
+
+  ```powershell
+  docker volume create gitlab-runner-config
+  ```
+
 - Install gitlab-runner via docker
 
-```powershell
-docker volume create gitlab-runner-config `
-docker run -d --name gitlab-runner --restart always `
--v /var/run/docker.sock:/var/run/docker.sock `
--v gitlab-runner-config:/etc/gitlab-runner `
-gitlab/gitlab-runner:alpine
-```
+  ```powershell
+  docker run -d --name gitlab-runner --restart always `
+  -v /var/run/docker.sock:/var/run/docker.sock `
+  -v gitlab-runner-config:/etc/gitlab-runner `
+  gitlab/gitlab-runner:alpine
+  ```
 
 - Check IP Address
   - Find the container ID
@@ -502,7 +507,7 @@ gitlab/gitlab-runner:alpine
     docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
     ```
 
-- Create runner in gitlab, copy the token, then register `runner`.
+- Create runner in gitlab, copy the token, then register `runner`. Select `shell`.
 
   ```powershell
   docker run --rm -it -v gitlab-runner-config:/etc/gitlab-runner gitlab/gitlab-runner:alpine register
