@@ -521,14 +521,9 @@ npm install -i -g prettier
 
   ```bash
   vi /etc/gitlab-runner/config.toml
-  exit
   ```
 
-- Restart `gitlab-runner` docker container.
-
-  ```powershell
-  docker restart gitlab-runner
-  ```
+- Exit gitlab-runner bash
 
 - References:
   - [YouTube - How to register & run GitLab Runner inside a Docker container](https://www.youtube.com/watch?v=JLdPiq0owUM)
