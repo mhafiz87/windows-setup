@@ -476,3 +476,39 @@ npm install -i -g prettier
   - [YouTube: Gmail SMTP Server Settings: Host Username and Password for Projects](https://www.youtube.com/watch?v=I9x0w8cjR_o)
   - [Gmail SMTP Settings: Easy Step-by-Step Setup Guide](https://www.gmass.co/blog/gmail-smtp/)
   - [Gitlab Omnibus SMTP SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html)
+
+## Gitlab Runner Via Docker
+
+- Install gitlab-runner via docker
+
+```powershell
+docker volume create gitlab-runner-config `
+docker run -d --name gitlab-runner --restart always `
+-v /var/run/docker.sock:/var/run/docker.sock `
+-v gitlab-runner-config:/etc/gitlab-runner `
+gitlab/gitlab-runner:alpine
+```
+
+- Check IP Address
+  - Find the container ID
+
+  ```powershell
+  docker ps -a
+  ```
+
+  - Find the IP address; __remove `<` `>`__.
+
+  ``` powershell
+  docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
+  ```
+
+- Register `runner`
+
+  ```powershell
+  docker run --rm -it -v gitlab-runner-config:/etc/gitlab-runner gitlab/gitlab-runner:alpine register
+  ```
+
+- References:
+  - [YouTube - How to register & run GitLab Runner inside a Docker container](https://www.youtube.com/watch?v=JLdPiq0owUM)
+  - [Run GitLab Runner in a container](https://docs.gitlab.com/runner/install/docker.html)
+  - [https://docs.gitlab.com/runner/register/?tab=Docker](https://docs.gitlab.com/runner/register/?tab=Docker)
