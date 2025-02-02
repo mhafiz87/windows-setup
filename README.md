@@ -507,7 +507,7 @@ npm install -i -g prettier
     docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
     ```
 
-- Create runner in gitlab, copy the token, then register `runner`. Select `shell`.
+- Create runner in gitlab, copy the token, then register `runner`. Select `shell` as the executor.
 
   ```powershell
   docker run --rm -it -v gitlab-runner-config:/etc/gitlab-runner gitlab/gitlab-runner:alpine register
