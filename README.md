@@ -185,6 +185,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - [x] NodeJS
   - [x] VSCode
   - [x] Neovim
+  - [x] PowerToys
   - [x] Docker Desktop
   - [ ] Fastfetch
   - [ ] Wezterm
@@ -195,12 +196,11 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - [ ] bitwarden
   - [ ] cygwin
   - [ ] clink (cmd)
-  - [ ] powertoys
   - [ ] ripgrep
   - [ ] jq
   - [ ] fzf
   - [ ] bat
-  - [ ] pyenv (python)
+  - [x] pyenv (python)
   - [x] uv (python)
 
 ### 7-Zip
@@ -319,7 +319,8 @@ $app = $root_download + "\software\powertoys.exe"
 $repo = "microsoft/PowerToys"
 $version = get-github-repo-latest-release "$repo"
 invoke-webrequest "https://github.com/$repo/releases/download/v$version/PowerToysUserSetup-$version-x64.exe" -outfile (new-item -path "$app" -force)
-start-process -filepath "$app" -args "/quiet /passive" -wait
+#start-process -filepath "$app" -args "/quiet /passive" -wait
+start-process -filepath "$app" -wait
 Remove-Item $app
 ```
 
@@ -333,6 +334,37 @@ invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
 start-process -filepath $app -wait install
 Remove-Item $app
 ```
+
+### cygwin
+
+### clink (cmd)
+
+### riprep
+
+### jq
+
+### fzf
+
+### bat
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\app.zip"
+$repo = "sharkdp/app"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/v$version/app-v$version-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata"
+$temp = get-childitem -path  $env:localappdata -directory -filter "*app*" | select-object -expandproperty name
+rename-item "$env:localappdata\$temp" "$env:localappdata\app"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\app;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+```
+
+### Pyenv (Python)
+
+```powershell
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"```
+
  ### UV (Python)
 
 ```powershell
@@ -343,6 +375,9 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 
 
 ## Installing Language Server Protocol (LSP)
+
+<details>
+<summary>Installing LSP(s)</summary>
 
 ### LuaLS
 
@@ -417,6 +452,8 @@ npm install -i -g markdownlint
 ```powershell
 npm install -i -g prettier
 ```
+
+</details>
 
 ## Gitlab Via Docker
 
