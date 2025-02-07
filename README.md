@@ -20,7 +20,17 @@
     - [Neovim](#neovim)
     - [PowerToys](#powertoys)
     - [Docker Desktop](#docker-desktop)
+    - [UV (Python)](#uv-python)
+  - [Installing Language Server Protocol (LSP)](#installing-language-server-protocol-lsp)
+    - [LuaLS](#luals)
+    - [Ruff](#ruff)
+    - [Marksman](#marksman)
+    - [Stylua](#stylua)
+    - [Powershell Service Editor](#powershell-service-editor)
+    - [Markdownlint (requires npm)](#markdownlint-requires-npm)
+    - [Prettier (requires npm)](#prettier-requires-npm)
   - [Gitlab Via Docker](#gitlab-via-docker)
+  - [Gitlab Runner Via Docker](#gitlab-runner-via-docker)
 
 </details>
 
