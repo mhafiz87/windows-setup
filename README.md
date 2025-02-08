@@ -20,6 +20,14 @@
     - [Neovim](#neovim)
     - [PowerToys](#powertoys)
     - [Docker Desktop](#docker-desktop)
+    - [cygwin](#cygwin)
+    - [clink (cmd)](#clink-cmd)
+    - [riprep](#riprep)
+    - [jq](#jq)
+    - [fzf](#fzf)
+    - [bat](#bat)
+    - [less](#less)
+    - [Pyenv (Python)](#pyenv-python)
     - [UV (Python)](#uv-python)
   - [Installing Language Server Protocol (LSP)](#installing-language-server-protocol-lsp)
     - [LuaLS](#luals)
@@ -29,8 +37,11 @@
     - [Powershell Service Editor](#powershell-service-editor)
     - [Markdownlint (requires npm)](#markdownlint-requires-npm)
     - [Prettier (requires npm)](#prettier-requires-npm)
-  - [Gitlab Via Docker](#gitlab-via-docker)
-  - [Gitlab Runner Via Docker](#gitlab-runner-via-docker)
+  - [Git](#git)
+  - [Gitlab](#gitlab)
+    - [Gitlab Via Docker](#gitlab-via-docker)
+    - [Gitlab Runner Via Docker](#gitlab-runner-via-docker)
+
 
 </details>
 
@@ -199,7 +210,8 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - [ ] ripgrep
   - [ ] jq
   - [ ] fzf
-  - [ ] bat
+  - [x] bat
+  - [ ] less
   - [x] pyenv (python)
   - [x] uv (python)
 
@@ -349,14 +361,27 @@ Remove-Item $app
 
 ```powershell
 $root_download = "$env:userprofile\setup"
-$app = $root_download + "\software\app.zip"
-$repo = "sharkdp/app"
+$app = $root_download + "\software\bat.zip"
+$repo = "sharkdp/bat"
 $version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/v$version/app-v$version-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$app" -force)
+invoke-webrequest "https://github.com/$repo/releases/download/v$version/bat-v$version-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$app" -force)
 expand-archive -path "$app" -destinationpath "$env:localappdata"
-$temp = get-childitem -path  $env:localappdata -directory -filter "*app*" | select-object -expandproperty name
-rename-item "$env:localappdata\$temp" "$env:localappdata\app"
-[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\app;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+$temp = get-childitem -path  $env:localappdata -directory -filter "*bat*" | select-object -expandproperty name
+rename-item "$env:localappdata\$temp" "$env:localappdata\bat"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\bat;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+```
+
+### less
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\less.zip"
+$repo = "jftuga/less-Windows"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/$version/less-x64.zip" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata\less"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\less;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 Remove-Item $app
 ```
 
@@ -480,7 +505,10 @@ git config --global core.editor "notepad++ -multiInst -notabbar -nosession -noPl
 # git config --global mergetool.keepBackup "false"
 # git config --global mergetool.nvimdiff.cmd "LOCAL,BASE,REMOTE / MERGED"
 git config --global interactive.diffFilter "delta --color-only"
-git config --global delta.navgiate true
+git config --global delta.true-color always
+git config --global delta.navigate true
+git config --global delta.line-numbers true
+git config --global delta.hyperlinks true
 git config --global delta.side-by-side true
 ```
 
