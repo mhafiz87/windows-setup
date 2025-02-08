@@ -455,7 +455,43 @@ npm install -i -g prettier
 
 </details>
 
-## Gitlab Via Docker
+## Git
+
+<details>
+<summary>Git Config</summary>
+
+```powershell
+git config --global user.name <username>
+git config --global user.email <email>
+git config --global color.ui "auto"
+git config --global alias.hist "log --oneline --graph --decorate --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+git config --global alias.lg "log --no-merges --first-parent --decorate --abbrev-commit --pretty=tformat:'%C(bold red)%h%C(reset)%C(bold yellow)%d%C(reset) | %C(bold cyan)%an%C(reset) | %C(bold green)%cr%C(reset)%n%s%n%b'"
+git config --global core.editor "notepad++ -multiInst -notabbar -nosession -noPlugin"
+# git config --global diff.tool "vscode"
+# git config --global difftool.vscode.cmd "code --wait --diff $local $remote"
+# git config --global merge.tool "vscode"
+# git config --global mergetool.vscode.cmd "code --wait $merged"
+# git config --global merge.tool "diffview"
+# git config --global mergetool.prompt "false"
+# git config --global mergetool.keepBackup "false"
+# git config --global mergetool.diffview.cmd 'nvim -n -c "DiffviewOpen" "$MERGE"'
+# git config --global merge.tool "nvimdiff"
+# git config --global mergetool.prompt "false"
+# git config --global mergetool.keepBackup "false"
+# git config --global mergetool.nvimdiff.cmd "LOCAL,BASE,REMOTE / MERGED"
+git config --global interactive.diffFilter "delta --color-only"
+git config --global delta.navgiate true
+git config --global delta.side-by-side true
+```
+
+</details>
+
+## Gitlab
+
+<details>
+<summary>Gitlab</summary>
+
+### Gitlab Via Docker
 
 - Create GITLAB_HOME environment variable
 
@@ -548,7 +584,7 @@ npm install -i -g prettier
   - [Gmail SMTP Settings: Easy Step-by-Step Setup Guide](https://www.gmass.co/blog/gmail-smtp/)
   - [Gitlab Omnibus SMTP SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html)
 
-## Gitlab Runner Via Docker
+### Gitlab Runner Via Docker
 
 - Create docker volume for gitlab-runner-config
 
@@ -601,3 +637,5 @@ npm install -i -g prettier
   - [Run GitLab Runner in a container](https://docs.gitlab.com/runner/install/docker.html)
   - [https://docs.gitlab.com/runner/register/?tab=Docker](https://docs.gitlab.com/runner/register/?tab=Docker)
   - [Jobs unable to access my gitlab instances](https://forum.gitlab.com/t/jobs-are-unable-to-access-my-gitlab-instance/62060/2)
+
+  </details>
