@@ -20,6 +20,7 @@
     - [Neovim](#neovim)
     - [PowerToys](#powertoys)
     - [Docker Desktop](#docker-desktop)
+    - [FFMPEG](#ffmpeg)
     - [UV (Python)](#uv-python)
   - [Installing Language Server Protocol (LSP)](#installing-language-server-protocol-lsp)
     - [LuaLS](#luals)
@@ -152,9 +153,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - https://gist.github.com/anthonyeden/0088b07de8951403a643a8485af2709b
   - https://richardspowershellblog.wordpress.com/2008/03/20/special-folders/
 
-
 </details>
-
 
 ## Installing Software(s)
 
@@ -186,6 +185,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - [x] VSCode
   - [x] Neovim
   - [x] Docker Desktop
+  - [ ] FFMPEG
   - [ ] Fastfetch
   - [ ] Wezterm
   - [ ] AutoHotKey
@@ -333,14 +333,36 @@ invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
 start-process -filepath $app -wait install
 Remove-Item $app
 ```
- ### UV (Python)
+
+### FFMPEG
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\ffmpeg.7z"
+invoke-webrequest "https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z" -outfile (new-item -path "$app" -force)
+if ((Test-Path $env:localappdata\ffmpeg) -eq $true){
+  echo "ffmpeg already exist in localappdata. Deleting..."
+  Remove-Item -Path $env:localappdata\ffmpeg -Recurse -Force
+}
+expand-7zip -archivefilename "$app" -targetpath "$env:localappdata"
+$temp = get-childitem -path  $env:localappdata -directory -filter "*ffmpeg*" | select-object -expandproperty name
+rename-item "$env:localappdata\$temp" "$env:localappdata\ffmpeg"
+$exist_env = [System.Environment]::GetEnvironmentVariable('path', "User") -Like "*ffmpeg\bin*"
+if ($exist_env -eq $true) {
+  echo "neovim already exist in path"
+}else{
+  [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\ffmpeg\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+}
+Remove-Item $app
+```
+
+### UV (Python)
 
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
 </details>
-
 
 ## Installing Language Server Protocol (LSP)
 
@@ -441,15 +463,16 @@ npm install -i -g prettier
 - Check gitlab container ip address.
 
   - Check IP Address
+
     - Find the container ID
-  
+
       ```powershell
       docker ps -a
       ```
 
-    - Find the IP address; __remove `<` `>`__.
+    - Find the IP address; **remove `<` `>`**.
 
-      ``` powershell
+      ```powershell
       docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
       ```
 
@@ -471,7 +494,7 @@ npm install -i -g prettier
 - Store your smtp user name and password via docker terminal:
 
   ```bash
-  gitlab-rake gitlab:smtp:secret:edit EDITOR=vim  
+  gitlab-rake gitlab:smtp:secret:edit EDITOR=vim
   ```
 
 - Modify /etc/gitlab/gitlab.rb for gmail smtp:
@@ -490,13 +513,15 @@ npm install -i -g prettier
   gitlab_rails['gitlab_email_from'] = '<gmail email>'
   gitlab_rails['gitlab_email_display_name'] = '<your name>'
   gitlab_rails['gitlab_email_reply_to'] = '<gmail email>'
-```
+  ```
+
+````
 
 7. Set gitlab root password
 
   ```bash
   gitlab-rake "gitlab:password:reset[root]"
-  ```
+````
 
 - To test sending emails, run the following command:
 
@@ -529,15 +554,16 @@ npm install -i -g prettier
   ```
 
 - Check IP Address
+
   - Find the container ID
 
     ```powershell
     docker ps -a
     ```
 
-  - Find the IP address; __remove `<` `>`__.
+  - Find the IP address; **remove `<` `>`**.
 
-    ``` powershell
+    ```powershell
     docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
     ```
 
