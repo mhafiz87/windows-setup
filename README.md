@@ -189,6 +189,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   ```
 
 - List of apps:
+  - [] Scoop
   - [x] 7-Zip
   - [x] Powershell 7
   - [x] Git
@@ -211,9 +212,17 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - [ ] jq
   - [ ] fzf
   - [x] bat
-  - [ ] less
+  - [x] less
   - [x] pyenv (python)
   - [x] uv (python)
+
+### Scoop
+
+```powershell
+# https://github.com/ScoopInstaller/Scoop
+
+
+```
 
 ### 7-Zip
 
