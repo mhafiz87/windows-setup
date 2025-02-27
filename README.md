@@ -11,6 +11,7 @@
     - [Add Webpage To Host](#add-webpage-to-host)
     - [Fonts](#fonts)
   - [Installing Software(s)](#installing-softwares)
+    - [Scoop](#scoop)
     - [7-Zip](#7-zip)
     - [Powershell 7](#powershell-7)
     - [Git](#git)
@@ -28,7 +29,6 @@
     - [bat](#bat)
     - [less](#less)
     - [Pyenv (Python)](#pyenv-python)
-    - [UV (Python)](#uv-python)
   - [Installing Language Server Protocol (LSP)](#installing-language-server-protocol-lsp)
     - [LuaLS](#luals)
     - [Ruff](#ruff)
@@ -37,7 +37,10 @@
     - [Powershell Service Editor](#powershell-service-editor)
     - [Markdownlint (requires npm)](#markdownlint-requires-npm)
     - [Prettier (requires npm)](#prettier-requires-npm)
-  - [Git](#git)
+  - [WSL](#wsl)
+    - [In Windows](#in-windows)
+    - [In Linux](#in-linux)
+  - [Git](#git-1)
   - [Gitlab](#gitlab)
     - [Gitlab Via Docker](#gitlab-via-docker)
     - [Gitlab Runner Via Docker](#gitlab-runner-via-docker)
@@ -489,6 +492,77 @@ npm install -i -g prettier
 
 </details>
 
+## WSL
+
+<details>
+<summary>WSL Setup</summary>
+
+### In Windows
+
+```powershell
+$text = "# Enable experimental features
+[experimental]
+sparseVhd=true
+
+[wsl2]
+networkingMode=mirrored
+dnsTunneling=true`r`n"
+if (!(Test-Path $env:userprofile\.wslconfig))
+{
+   New-Item -path $env:userprofile -name .wslconfig -type "file" -value $text
+   Write-Host "Created new file and text content added"
+} else {
+  Add-Content -path $env:userprofile\.wslconfig -value $text
+  Write-Host "File already exists and new text content added"
+}
+wsl --install -d Debian
+```
+
+### In Linux
+
+- Disable windows path
+
+  ```bash
+  sudo echo -e "\n[interop]\nappendWindowsPath=false\n" >> /etc/wsl.conf
+  ```
+
+- Restart WSL in windows
+
+  ```powershell
+  wsl --shutdown -d Debian  # if using Debian
+  ```
+
+- Copy `$env:userprofile/.config/ohmyposh/zen.toml` to `~/.config/ohmyposh/zen.toml`
+
+- Setup
+
+  ```bash
+  sudo apt update && sudo apt upgrade -y && sudo apt install -y build-essential \
+  libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl git \
+  libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
+  unzip
+  # Install OhMyPosh
+  curl -s https://ohmyposh.dev/install.sh | bash -s
+  echo 'eval "$(oh-my-posh init bash --config ~/.config/ohmyposh/zen.toml)"' >> ~/.bashrc
+  # Install PyEnv
+  curl -fsSL https://pyenv.run | bash
+  echo 'export PYENV_ROOT="$HOME/.pyenv"'  >> ~/.bashrc
+  echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+  echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc
+  # Install UV
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  source ~/.bashrc
+  ```
+
+- References
+  - [No internet connection Ubuntu-WSL while VPN](https://superuser.com/a/1818812)
+  - [How to remove the Win10's PATH from WSL](https://stackoverflow.com/a/51345880)
+  - [UV](https://docs.astral.sh/uv/)
+  - [PyEnv](https://github.com/pyenv/pyenv)
+  - [PyEnv Build Environment](https://github.com/pyenv/pyenv/wiki#suggested-build-environment)
+
+</details>
+
 ## Git
 
 <details>
@@ -552,7 +626,7 @@ git config --global delta.side-by-side true
 
   - Check IP Address
     - Find the container ID
-  
+
       ```powershell
       docker ps -a
       ```
@@ -581,7 +655,7 @@ git config --global delta.side-by-side true
 - Store your smtp user name and password via docker terminal:
 
   ```bash
-  gitlab-rake gitlab:smtp:secret:edit EDITOR=vim  
+  gitlab-rake gitlab:smtp:secret:edit EDITOR=vim
   ```
 
 - Modify /etc/gitlab/gitlab.rb for gmail smtp:
