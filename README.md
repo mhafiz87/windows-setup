@@ -540,7 +540,7 @@ wsl --install -d Debian
   sudo apt update && sudo apt upgrade -y && sudo apt install -y build-essential \
   libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl git \
   libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
-  unzip
+  unzip wget bat fzf jq
   # Install OhMyPosh
   curl -s https://ohmyposh.dev/install.sh | bash -s
   echo 'eval "$(oh-my-posh init bash --config ~/.config/ohmyposh/zen.toml)"' >> ~/.bashrc
