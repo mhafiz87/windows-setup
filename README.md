@@ -419,32 +419,35 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 ### LuaLS
 
 ```powershell
+if(test-path -path $env:userprofile\lsp\luals){remove-item -path "$env:userprofile\lsp\luals" -recurse -force}
 $root_download = "$env:userprofile\lsp"
 $lsp = $root_download + "\luals.zip"
 $repo = "LuaLS/lua-language-server"
 $version = get-github-repo-latest-release "$repo"
 invoke-webrequest "https://github.com/$repo/releases/download/$version/lua-language-server-$version-win32-x64.zip" -outfile (new-item -path "$lsp" -force)
 expand-archive -path "$lsp" -destinationpath "$root_download\luals"
-[System.Environment]::SetEnvironmentVariable('path', "$root_download\luals\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 Remove-Item $lsp
+[System.Environment]::SetEnvironmentVariable('path', "$root_download\luals\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 ```
 
 ### Ruff
 
 ```powershell
+if(test-path -path $env:userprofile\lsp\ruff){remove-item -path "$env:userprofile\lsp\ruff" -recurse -force}
 $root_download = "$env:userprofile\lsp"
 $lsp = $root_download + "\ruff.zip"
 $repo = "astral-sh/ruff"
 $version = get-github-repo-latest-release "$repo"
 invoke-webrequest "https://github.com/$repo/releases/download/$version/ruff-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$lsp" -force)
 expand-archive -path "$lsp" -destinationpath "$root_download\ruff"
-[System.Environment]::SetEnvironmentVariable('path', "$root_download\ruff;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 Remove-Item $lsp
+[System.Environment]::SetEnvironmentVariable('path', "$root_download\ruff;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 ```
 
 ### Marksman
 
 ```powershell
+if(test-path -path $env:userprofile\lsp\marksman){remove-item -path "$env:userprofile\lsp\marksman" -recurse -force}
 $root_download = "$env:userprofile\lsp"
 $lsp = $root_download + "\marksman\marksman.exe"
 $repo = "artempyanykh/marksman"
@@ -456,19 +459,21 @@ invoke-webrequest "https://github.com/$repo/releases/download/$version/marksman.
 ### Stylua
 
 ```powershell
+if(test-path -path $env:userprofile\lsp\stylua){remove-item -path "$env:userprofile\lsp\stylua" -recurse -force}
 $root_download = "$env:userprofile\lsp"
 $lsp = $root_download + "\stylua.zip"
 $repo = "JohnnyMorganz/StyLua"
 $version = get-github-repo-latest-release "$repo"
 invoke-webrequest "https://github.com/$repo/releases/download/v$version/stylua-windows-x86_64.zip" -outfile (new-item -path "$lsp" -force)
 expand-archive -path "$lsp" -destinationpath "$root_download\stylua"
-[System.Environment]::SetEnvironmentVariable('path', "$root_download\stylua;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 Remove-Item $lsp
+[System.Environment]::SetEnvironmentVariable('path', "$root_download\stylua;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 ```
 
 ### Powershell Service Editor
 
 ```powershell
+if(test-path -path $env:userprofile\lsp\PowerShellEditorServices){remove-item -path "$env:userprofile\lsp\PowerShellEditorServices" -recurse -force}
 $root_download = "$env:userprofile\lsp"
 $lsp = $root_download + "\PowerShellEditorServices.zip"
 $repo = "PowerShell/PowerShellEditorServices"
