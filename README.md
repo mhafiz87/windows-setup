@@ -470,16 +470,15 @@ Remove-Item $lsp
 [System.Environment]::SetEnvironmentVariable('path', "$root_download\stylua;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 ```
 
-### Taplo (**WIP**)
+### Taplo
 
 ```powershell
-# https://github.com/tamasfe/taplo/releases/latest/download/taplo-windows-aarch64.zip
 if(test-path -path $env:userprofile\lsp\taplo){remove-item -path "$env:userprofile\lsp\taplo" -recurse -force}
 $root_download = "$env:userprofile\lsp"
 $lsp = $root_download + "\taplo.zip"
 $repo = "tamasfe/taplo"
 $version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/$version/taplo-windows-aarch64.zip" -outfile (new-item -path "$lsp" -force)
+invoke-webrequest "https://github.com/$repo/releases/download/$version/taplo-windows-x86_64.zip" -outfile (new-item -path "$lsp" -force)
 expand-archive -path "$lsp" -destinationpath "$root_download\taplo"
 Remove-Item $lsp
 [System.Environment]::SetEnvironmentVariable('path', "$root_download\taplo;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
