@@ -29,22 +29,23 @@
     - [bat](#bat)
     - [less](#less)
     - [Pyenv (Python)](#pyenv-python)
+    - [UV (Python)](#uv-python)
   - [Installing Language Server Protocol (LSP)](#installing-language-server-protocol-lsp)
     - [LuaLS](#luals)
     - [Ruff](#ruff)
     - [Marksman](#marksman)
     - [Stylua](#stylua)
+    - [Taplo](#taplo)
     - [Powershell Service Editor](#powershell-service-editor)
     - [Markdownlint (requires npm)](#markdownlint-requires-npm)
     - [Prettier (requires npm)](#prettier-requires-npm)
   - [WSL](#wsl)
     - [In Windows](#in-windows)
     - [In Linux](#in-linux)
-  - [Git](#git-1)
+  - [Git](#git)
   - [Gitlab](#gitlab)
     - [Gitlab Via Docker](#gitlab-via-docker)
     - [Gitlab Runner Via Docker](#gitlab-runner-via-docker)
-
 
 </details>
 
