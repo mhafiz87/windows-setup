@@ -433,17 +433,25 @@ Remove-Item $lsp
 
 ### Ruff
 
-```powershell
-if(test-path -path $env:userprofile\lsp\ruff){remove-item -path "$env:userprofile\lsp\ruff" -recurse -force}
-$root_download = "$env:userprofile\lsp"
-$lsp = $root_download + "\ruff.zip"
-$repo = "astral-sh/ruff"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/$version/ruff-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$lsp" -force)
-expand-archive -path "$lsp" -destinationpath "$root_download\ruff"
-Remove-Item $lsp
-[System.Environment]::SetEnvironmentVariable('path', "$root_download\ruff;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
-```
+- Via UV
+
+  ```powershell
+  uv tool install ruff@latest
+  ```
+
+- Via PowerShell
+
+  ```powershell
+  if(test-path -path $env:userprofile\lsp\ruff){remove-item -path "$env:userprofile\lsp\ruff" -recurse -force}
+  $root_download = "$env:userprofile\lsp"
+  $lsp = $root_download + "\ruff.zip"
+  $repo = "astral-sh/ruff"
+  $version = get-github-repo-latest-release "$repo"
+  invoke-webrequest "https://github.com/$repo/releases/download/$version/ruff-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$lsp" -force)
+  expand-archive -path "$lsp" -destinationpath "$root_download\ruff"
+  Remove-Item $lsp
+  [System.Environment]::SetEnvironmentVariable('path', "$root_download\ruff;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+  ```
 
 ### Marksman
 
