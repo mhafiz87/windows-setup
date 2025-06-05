@@ -509,19 +509,25 @@ Remove-Item $lsp
 ### Markdownlint (requires npm)
 
 ```powershell
-npm install -iwr -g markdownlint
+npm install -iwr --global markdownlint
+```
+
+### Markdownlint-cli2 (requires npm)
+
+```powershell
+npm install -iwr --global markdownlint-cli2
 ```
 
 ### Prettier (requires npm)
 
 ```powershell
-npm install -iwr -g prettier
+npm install -iwr --global prettier
 ```
 
 ### YAML
 
 ```powershell
-npm install --iwr -g yaml-language-server
+npm install --iwr --global yaml-language-server
 ```
 
 </details>
