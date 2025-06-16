@@ -28,6 +28,7 @@
     - [fzf](#fzf)
     - [bat](#bat)
     - [less](#less)
+    - [yt-dlp](#yt-dlp)
     - [Pyenv (Python)](#pyenv-python)
     - [UV (Python)](#uv-python)
   - [Installing Language Server Protocol (LSP)](#installing-language-server-protocol-lsp)
@@ -38,7 +39,9 @@
     - [Taplo](#taplo)
     - [Powershell Service Editor](#powershell-service-editor)
     - [Markdownlint (requires npm)](#markdownlint-requires-npm)
+    - [Markdownlint-cli2 (requires npm)](#markdownlint-cli2-requires-npm)
     - [Prettier (requires npm)](#prettier-requires-npm)
+    - [YAML](#yaml)
   - [WSL](#wsl)
     - [In Windows](#in-windows)
     - [In Linux](#in-linux)
@@ -398,10 +401,23 @@ expand-archive -path "$app" -destinationpath "$env:localappdata\less"
 Remove-Item $app
 ```
 
+### yt-dlp
+
+```powershell
+$root_download = "$env:localappdata\programs"
+$app = $root_download + "\yt-dlp.exe"
+$repo = "yt-dlp/yt-dlp"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/$version/yt-dlp.exe" -outfile (new-item -path "$app" -force)
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\Programs;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+```
+
+
 ### Pyenv (Python)
 
 ```powershell
-Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"```
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+```
 
  ### UV (Python)
 
