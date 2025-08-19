@@ -546,6 +546,12 @@ npm install --iwr --global prettier
 npm install --iwr --global yaml-language-server
 ```
 
+### bash-language-server
+
+```powershell
+npm install --iwr --global bash-language-server
+```
+
 </details>
 
 ## WSL
