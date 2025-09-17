@@ -518,11 +518,19 @@ if(test-path -path $env:userprofile\lsp\stylua){remove-item -path "$env:userprof
 $root_download = "$env:userprofile\lsp"
 $lsp = $root_download + "\stylua.zip"
 $repo = "JohnnyMorganz/StyLua"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/v$version/stylua-windows-x86_64.zip" -outfile (new-item -path "$lsp" -force)
+# $version = get-github-repo-latest-release "$repo"
+$apiUrl = "https://api.github.com/repos/$repo/releases/latest"
+$response = Invoke-RestMethod -Uri $apiUrl
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/$version/stylua-windows-x86_64.zip" -outfile (new-item -path "$lsp" -force)
 expand-archive -path "$lsp" -destinationpath "$root_download\stylua"
 Remove-Item $lsp
-[System.Environment]::SetEnvironmentVariable('path', "$root_download\stylua;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+if(Get-Command -Name stylua -ErrorAction SilentlyContinue){
+  Write-Host "stylua exist in path"
+}else{
+  Write-Host "adding stylua to path"
+  [System.Environment]::SetEnvironmentVariable('path', "$root_download\stylua;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+}
 ```
 
 ### Taplo
