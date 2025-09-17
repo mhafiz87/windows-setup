@@ -214,6 +214,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - [ ] Notepad++
   - [ ] bitwarden
   - [ ] cygwin
+  - [ ] msys2
   - [ ] clink (cmd)
   - [ ] ripgrep
   - [ ] jq
