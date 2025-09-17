@@ -364,6 +364,35 @@ start-process -filepath $app -wait install
 Remove-Item $app
 ```
 
+### VS Build Tools
+
+- Component To Install:
+  - MSVC v143
+  - C++ CMake tools for Windows
+  - Windows 10 SDK
+
+- Download build tools from [here](https://visualstudio.microsoft.com/visual-cpp-build-tools/) into Downloads.
+- Run below script:
+
+```powershell
+cd $env:userprofile\downloads
+new-item -itemtype directory -path vsinstaller
+.\vs_buildtools.exe --layout e:\vsinstaller --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project --add Microsoft.VisualStudio.Component.Windows11SDK.22621
+cd vsinstaller
+.\vs_buildtools.exe --noWeb --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project --add Microsoft.VisualStudio.Component.Windows11SDK.22621
+```
+
+- Add CMAKE path to Windows Environment User Variable by searching CMAKE in Microsoft Visual Studio install path.
+- Delete vsinstaller folder in downloads directory
+
+```powershell
+Remove-Item -Path $env:userprofile\downloads\vs_installer -Recurse -Force
+```
+
+- References:
+  - [List of VS components](https://learn.microsoft.com/en-us/visualstudio/install/workload-and-component-ids)
+  - [Create an offline installation](https://learn.microsoft.com/en-us/visualstudio/install/create-an-offline-installation-of-visual-studio)
+
 ### cygwin
 
 ### clink (cmd)
