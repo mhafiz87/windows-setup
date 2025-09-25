@@ -700,6 +700,30 @@ git config --global delta.side-by-side true
 
 </details>
 
+## FreeCAD
+
+<details>
+  <summary>Freecad</summary>
+
+### Addon Manager
+
+- OpenTheme
+- Maker Workbench
+
+### Macro
+
+- [Honeycomb](https://github.com/mhafiz87/honeycomb/blob/main/Honeycomb.py)
+
+### Preferences
+
+- General
+  - Application
+    - Theme: OpenDark
+    - Size of toolbar icons: Small(16px)
+  - Preference Pack Name: OpenPreferences
+  
+</details>
+
 ## Gitlab
 
 <details>
