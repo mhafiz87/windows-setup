@@ -676,8 +676,15 @@ git config --global user.email <email>
 git config --global color.ui "auto"
 git config --global alias.hist "log --oneline --graph --decorate --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 git config --global alias.lg "log --no-merges --first-parent --decorate --abbrev-commit --pretty=tformat:'%C(bold red)%h%C(reset)%C(bold yellow)%d%C(reset) | %C(bold cyan)%an%C(reset) | %C(bold green)%cr%C(reset)%n%s%n%b'"
-git config --global core.editor "notepad++ -multiInst -notabbar -nosession -noPlugin"
+git config --global commit.template "~/.gitmessage"
+git config --global status.short true
+git config --global status.branch true
+git config --global status.showStash true
+# git config --global core.editor "notepad++ -multiInst -notabbar -nosession -noPlugin"
+git config --global core.editor "nvim -f --clean -c 'set mouse=a nu rnu splitbelow splitright smartindent expandtab shiftwidth=4 softtabstop=4 timeoutlen=500 nowrap clipboard=unnamedplus completeopt=fuzzy,menu,menuone,noinsert,noselect,popup ignorecase scrolloff=8 sidescrolloff=8 guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175 wildmode=longest:full,full wildoptions=fuzzy,pum,tagfile winborder=rounded' -c 'imap jk <Esc>'"
 git config --global core.longpaths true
+git config --global pager "delta"
+git config --global url."https://github.com/mhafiz87/".insteadOf "mhafiz87:"
 # git config --global diff.tool "vscode"
 # git config --global difftool.vscode.cmd "code --wait --diff $local $remote"
 # git config --global merge.tool "vscode"
