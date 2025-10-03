@@ -457,6 +457,21 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
+### Go
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\go-windows-amd64.msi"
+$url = "https://go.dev" + (invoke-webrequest -usebasicparsing -uri "https://go.dev/dl/" `
+    | select-object -expandproperty links `
+    | where-object {($_.outerhtml -match "windows-amd64.msi")} `
+    | select-object -first 1 `
+    | select-object -expandproperty href)
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+start-process -filepath "msiexec" -args "/i $app INSTALLDIR=$install_path /qn /L*V $root_download\software\go_install.log" -wait
+remote-item $app
+```
+
 </details>
 
 
