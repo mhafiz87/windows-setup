@@ -468,6 +468,7 @@ $url = "https://go.dev" + (invoke-webrequest -usebasicparsing -uri "https://go.d
     | select-object -first 1 `
     | select-object -expandproperty href)
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+$install_path = "$env:localappdata\go\"
 start-process -filepath "msiexec" -args "/i $app INSTALLDIR=$install_path /qn /L*V $root_download\software\go_install.log" -wait
 remote-item $app
 ```
