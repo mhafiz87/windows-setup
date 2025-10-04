@@ -608,6 +608,12 @@ npm install --iwr --global yaml-language-server
 npm install --iwr --global bash-language-server
 ```
 
+### shfmt (requires go)
+
+```powershell
+go install mvdan.cc/sh/v3/cmd/shfmt@latest
+```
+
 </details>
 
 ## WSL
