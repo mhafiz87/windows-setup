@@ -706,7 +706,7 @@ git config --global core.hooksPath "~/.config/git/hooks"
 # git config --global core.editor "notepad++ -multiInst -notabbar -nosession -noPlugin"
 git config --global core.editor "nvim -f --clean -c 'set mouse=a nu rnu splitbelow splitright smartindent expandtab shiftwidth=4 softtabstop=4 timeoutlen=500 nowrap clipboard=unnamedplus completeopt=fuzzy,menu,menuone,noinsert,noselect,popup ignorecase scrolloff=8 sidescrolloff=8 guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175 wildmode=longest:full,full wildoptions=fuzzy,pum,tagfile winborder=rounded' -c 'imap jk <Esc>'"
 git config --global core.longpaths true
-git config --global pager "delta"
+git config --global core.pager "delta"
 git config --global url."https://github.com/mhafiz87/".insteadOf "mhafiz87:"
 # git config --global diff.tool "vscode"
 # git config --global difftool.vscode.cmd "code --wait --diff $local $remote"
