@@ -696,7 +696,7 @@ wsl --install -d Debian
 git config --global user.name <username>
 git config --global user.email <email>
 git config --global color.ui "auto"
-git config --global alias.hist "log --oneline --graph --decorate --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+git config --global alias.hist "log --oneline --graph --decorate --all --abbrev-commit --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(bold blue)%an%C(reset)'"
 git config --global alias.lg "log --no-merges --first-parent --decorate --abbrev-commit --pretty=tformat:'%C(bold red)%h%C(reset)%C(bold yellow)%d%C(reset) | %C(bold cyan)%an%C(reset) | %C(bold green)%cr%C(reset)%n%s%n%b'"
 git config --global commit.template "~/.config/git/.gitmessage"
 git config --global status.short true
