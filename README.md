@@ -567,8 +567,24 @@ start-process -filepath "msiexec" -args "/i $app INSTALLDIR=$install_path /qn /L
 remote-item $app
 ```
 
-</details>
+### Throttlestop
 
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\throttlestop.zip"
+$url = (invoke-webrequest -usebasicparsing -uri "https://throttlestop.net/download/" `
+  | select-object -expandproperty links `
+  | where-object {($_.href -match ".zip")} `
+  | select-object -first 1 `
+  | select-object -expandproperty href)
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata\throttlestop"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\throttlestop;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+
+```
+
+</details>
 
 ## Installing Language Server Protocol (LSP)
 
