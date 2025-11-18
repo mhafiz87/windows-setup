@@ -224,15 +224,13 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   - [ ] VLC
   - [ ] Notepad++
   - [ ] bitwarden
-  - [ ] cygwin
   - [ ] msys2
   - [ ] clink (cmd)
-  - [ ] ripgrep
-  - [ ] jq
-  - [ ] fzf
+  - [x] ripgrep
+  - [x] jq
+  - [x] fzf
   - [x] bat
   - [x] less
-  - [x] pyenv (python)
   - [x] uv (python)
 
 ### Scoop
@@ -346,6 +344,22 @@ $app = $root_download + "\software\virtualbox.exe"
 $url = (invoke-webrequest -usebasicparsing -uri "https://www.virtualbox.org/wiki/Downloads" `
   | select-object -expandproperty links `
   | where-object {($_.href -match "Win.exe")} `
+  | select-object -first 1 `
+  | select-object -expandproperty href)
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+start-process -filepath "$app" -Verb RunAs -wait
+Remove-Item $app
+
+```
+
+### MSYS2 (as admin)
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\msys2.exe"
+$url = (invoke-webrequest -usebasicparsing -uri "https://www.msys2.org/#installation" `
+  | select-object -expandproperty links `
+  | where-object {($_.href -match "msys2-x86_64")} `
   | select-object -first 1 `
   | select-object -expandproperty href)
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
