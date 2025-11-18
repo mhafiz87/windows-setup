@@ -395,15 +395,44 @@ Remove-Item -Path $env:userprofile\downloads\vs_installer -Recurse -Force
   - [List of VS components](https://learn.microsoft.com/en-us/visualstudio/install/workload-and-component-ids)
   - [Create an offline installation](https://learn.microsoft.com/en-us/visualstudio/install/create-an-offline-installation-of-visual-studio)
 
-### cygwin
-
 ### clink (cmd)
 
 ### riprep
 
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\rg.zip"
+$repo = "BurntSushi/ripgrep"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/$version/ripgrep-$version-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata"
+$temp = get-childitem -path  $env:localappdata -directory -filter "*ripgrep*" | select-object -expandproperty name
+rename-item "$env:localappdata\$temp" "$env:localappdata\ripgrep"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\ripgrep;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+```
+
 ### jq
 
+```powershell
+$repo = "jqlang/jq"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/$version/jq-win64.exe" -outfile (new-item -path "$env:localappdata\jq\jq.exe" -force)
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\jq;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+```
+
 ### fzf
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\fzf.zip"
+$repo = "junegunn/fzf"
+$version = get-github-repo-latest-release "$repo"
+invoke-webrequest "https://github.com/$repo/releases/download/v$version/fzf-$version-windows_amd64.zip" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata\fzf"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\fzf;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+```
 
 ### bat
 
