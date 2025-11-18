@@ -293,14 +293,14 @@ rename-item "$env:localappdata\$temp" "$env:localappdata\delta"
 Remove-Item $app
 ```
 
-### NodeJS
+### NodeJS (as admin)
 
 ```powershell
 $root_download = "$env:userprofile\setup"
 $app = $root_download + "\software\node_js.msi"
-$url = (invoke-webrequest -usebasicparsing -uri "https://nodejs.org/en" `
+$url = (invoke-webrequest -usebasicparsing -uri "https://nodejs.org/en/download" `
   | select-object -expandproperty links `
-  | where-object {($_.outerhtml -match "LTS")} `
+  | where-object {($_.href -match ".tar.gz")} `
   | select-object -first 1 `
   | select-object -expandproperty href).replace(".tar.gz", "-x64.msi")
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
