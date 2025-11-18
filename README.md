@@ -255,6 +255,7 @@ $url = 'https://7-zip.org/' + (invoke-webrequest -usebasicparsing -uri 'https://
 invoke-webrequest $url -outfile (new-item -path "$app" -force)
 Start-Process -FilePath $app -Args "/S" -Verb RunAs -Wait
 Remove-Item $app
+
 ```
 
 ### Powershell 7
@@ -268,6 +269,7 @@ invoke-webrequest "https://github.com/$repo/releases/download/v$version/powershe
 # iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
 start-process -filepath "$app" -Args "/quiet /passive ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_PATH=1" -Wait
 Remove-Item $app
+
 ```
 
 ### Git
@@ -284,6 +286,7 @@ invoke-webrequest "https://github.com/$repo/releases/download/v$version.windows.
 start-process -filepath "$app" -args "/VERYSILENT /NORESTART" -wait
 [System.Environment]::SetEnvironmentVariable('path', "C:\Program Files\Git\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 Remove-Item $app
+
 ```
 
 ### Git - Delta
@@ -300,6 +303,7 @@ $temp = get-childitem -path  $env:localappdata -directory -filter "*delta*" | se
 rename-item "$env:localappdata\$temp" "$env:localappdata\delta"
 [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\delta;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 Remove-Item $app
+
 ```
 
 ### NodeJS (as admin)
@@ -315,6 +319,7 @@ $url = (invoke-webrequest -usebasicparsing -uri "https://nodejs.org/en/download"
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
 start-process -filepath "msiexec.exe" -args "/i $app /qn /l* $root_download\software\node-log.txt" -Verb RunAs -wait
 Remove-Item $app
+
 ```
 
 ### Go (as admin)
@@ -330,6 +335,23 @@ $url = (invoke-webrequest -usebasicparsing -uri "https://go.dev/dl" `
 invoke-webrequest "https://go.dev$url" -outfile (new-item -path "$app" -force)
 start-process -filepath "msiexec.exe" -args "/i $app /qn /l* $root_download\software\go-log.txt" -Verb RunAs -wait
 Remove-Item $app
+
+```
+
+### Oracle VirtualBox (as admin)
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\virtualbox.exe"
+$url = (invoke-webrequest -usebasicparsing -uri "https://www.virtualbox.org/wiki/Downloads" `
+  | select-object -expandproperty links `
+  | where-object {($_.href -match "Win.exe")} `
+  | select-object -first 1 `
+  | select-object -expandproperty href)
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+start-process -filepath "$app" -Verb RunAs -wait
+Remove-Item $app
+
 ```
 
 ### VS Code
@@ -340,6 +362,7 @@ $app = $root_download + "\software\vscode.exe"
 invoke-webrequest "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" -outfile (new-item -path "$app" -force)
 start-process -filepath "$app" -args "/verysilent /norestart /mergetasks=addcontextmenufiles,addcontextmenufolders,!runcode,!desktopicon" -wait
 Remove-Item $app
+
 ```
 
 ### Neovim
@@ -364,6 +387,7 @@ if ($exist_env -eq $true) {
   [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\neovim\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 }
 Remove-Item $app
+
 ```
 
 ### PowerToys
@@ -377,6 +401,7 @@ invoke-webrequest "https://github.com/$repo/releases/download/v$version/PowerToy
 #start-process -filepath "$app" -args "/quiet /passive" -wait
 start-process -filepath "$app" -wait
 Remove-Item $app
+
 ```
 
 ### Docker Desktop
@@ -388,6 +413,7 @@ $url = (invoke-webrequest -usebasicparsing -uri "https://docs.docker.com/desktop
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
 start-process -filepath $app -wait install
 Remove-Item $app
+
 ```
 
 ### VS Build Tools
@@ -434,6 +460,7 @@ $temp = get-childitem -path  $env:localappdata -directory -filter "*ripgrep*" | 
 rename-item "$env:localappdata\$temp" "$env:localappdata\ripgrep"
 [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\ripgrep;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 Remove-Item $app
+
 ```
 
 ### jq
