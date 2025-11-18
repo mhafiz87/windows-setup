@@ -73,6 +73,15 @@ Set-ExecutionPolicy Bypass -Scope CurrentUser -Force
   - [Microsoft Docs](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy)
   - [makeuseof](https://www.makeuseof.com/enable-script-execution-policy-windows-powershell/)
 
+### Set Show More As Default
+
+```powershell
+reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
+```
+
+- References:
+  - [Microsoft Q&A](https://learn.microsoft.com/en-us/answers/questions/4321335/windows-11-right-click-explorer-menu-show-more-as)
+
 ### File Explorer
 
 - Option
