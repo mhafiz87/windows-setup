@@ -313,7 +313,22 @@ $url = (invoke-webrequest -usebasicparsing -uri "https://nodejs.org/en/download"
   | select-object -first 1 `
   | select-object -expandproperty href).replace(".tar.gz", "-x64.msi")
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
-start-process -filepath "msiexec.exe" -args "/i $app /qn /l* $root_download\software\node-log.txt" -wait
+start-process -filepath "msiexec.exe" -args "/i $app /qn /l* $root_download\software\node-log.txt" -Verb RunAs -wait
+Remove-Item $app
+```
+
+### Go (as admin)
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\go.msi"
+$url = (invoke-webrequest -usebasicparsing -uri "https://go.dev/dl" `
+  | select-object -expandproperty links `
+  | where-object {($_.href -match "amd64.msi")} `
+  | select-object -first 1 `
+  | select-object -expandproperty href)
+invoke-webrequest "https://go.dev$url" -outfile (new-item -path "$app" -force)
+start-process -filepath "msiexec.exe" -args "/i $app /qn /l* $root_download\software\go-log.txt" -Verb RunAs -wait
 Remove-Item $app
 ```
 
