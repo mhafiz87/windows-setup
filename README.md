@@ -84,7 +84,7 @@ reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\
 
 ### File Explorer
 
-- Option
+- Open `File Explorer`, then `…` > `Option`
   - General
     - Open File Explorer to `This PC`.
     - Disable
@@ -92,15 +92,15 @@ reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\
       - Show frequently used folders
       - Show recommended sections
       - Include account based insights
-    - View
-      - Enable `Decrease space between items`
-      - Enable `Display the full path in the title bar`
-      - Select `Show hidden files, folders, and drives`
-      - Disable `Hide extensions for known file types`
+  - View
+    - Enable `Decrease space between items`
+    - Enable `Display the full path in the title bar`
+    - Select `Show hidden files, folders, and drives`
+    - Disable `Hide extensions for known file types`
 
 ### Settings
 
-- Open settings
+- Click `Start`, then open `settings`
   - Personalization
     - Colors
       - Dark
