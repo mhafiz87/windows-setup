@@ -62,7 +62,7 @@
 ### Enable powershell script execution
 
 ```powershell
-  # Only For Current Session
+# Only For Current Session
 Set-ExecutionPolicy -ExecutionPolicy AllSigned -Scope Process
 
 # Always Enable For Current User
