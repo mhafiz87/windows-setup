@@ -4,8 +4,10 @@
 <summary>Table of Contents</summary>
 
 - [WINDOWS SETUP](#windows-setup)
+  - [Flow](#flow)
   - [Base Configuration](#base-configuration)
     - [Enable powershell script execution](#enable-powershell-script-execution)
+    - [Set Show More As Default](#set-show-more-as-default)
     - [File Explorer](#file-explorer)
     - [Settings](#settings)
     - [Add Webpage To Host](#add-webpage-to-host)
@@ -16,13 +18,15 @@
     - [Powershell 7](#powershell-7)
     - [Git](#git)
     - [Git - Delta](#git---delta)
-    - [NodeJS](#nodejs)
+    - [NodeJS (as admin)](#nodejs-as-admin)
+    - [Go (as admin)](#go-as-admin)
+    - [Oracle VirtualBox (as admin)](#oracle-virtualbox-as-admin)
+    - [MSYS2 (as admin)](#msys2-as-admin)
     - [VS Code](#vs-code)
     - [Neovim](#neovim)
     - [PowerToys](#powertoys)
     - [Docker Desktop](#docker-desktop)
     - [VS Build Tools](#vs-build-tools)
-    - [cygwin](#cygwin)
     - [clink (cmd)](#clink-cmd)
     - [riprep](#riprep)
     - [jq](#jq)
@@ -32,6 +36,8 @@
     - [yt-dlp](#yt-dlp)
     - [Pyenv (Python)](#pyenv-python)
     - [UV (Python)](#uv-python)
+    - [Go](#go)
+    - [Throttlestop](#throttlestop)
   - [Installing Language Server Protocol (LSP)](#installing-language-server-protocol-lsp)
     - [LuaLS](#luals)
     - [Ruff](#ruff)
@@ -44,13 +50,30 @@
     - [Prettier (requires npm)](#prettier-requires-npm)
     - [YAML](#yaml)
     - [bash-language-server](#bash-language-server)
+    - [shfmt (requires go)](#shfmt-requires-go)
   - [WSL](#wsl)
     - [In Windows](#in-windows)
     - [In Linux](#in-linux)
   - [Git](#git)
+  - [FreeCAD](#freecad)
+    - [Addon Manager](#addon-manager)
+    - [Macro](#macro)
+    - [Preferences](#preferences)
   - [Gitlab](#gitlab)
     - [Gitlab Via Docker](#gitlab-via-docker)
     - [Gitlab Runner Via Docker](#gitlab-runner-via-docker)
+
+</details>
+
+## Flow
+
+<details>
+<summary>Flow</summary>
+
+1. [ ] Perform windows update
+2. [ ] [Enable powershell script execution](#enable-powershell-script-execution)
+3. [ ] Set `Show More` as default
+4. [ ] Change file explorer settings
 
 </details>
 
@@ -206,32 +229,50 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   }
   ```
 
-- List of apps:
-  - [] Scoop
+  ***Edited but not tested (pending checking if exist in windows variables)***
+  ***Pending checking if exist in windows variables***
+  ***Pending update***
+
+  - Legend
+    * x - ready
+    * O - pending
+    * ! - not available
+
+
+  | App | Install | Path | Update |
+  |-----|--------|------|--------|
+  | 7-Zip |  x  |  !  |  x  |
+  |   |  x  |  x   |  x   |
+
+
   - [x] 7-Zip
   - [x] Powershell 7
   - [x] Git
   - [x] Git - Delta
   - [x] NodeJS
+  - [x] Go
+  - [x] VirtualBox
+  - [x] MSYS2
   - [x] VSCode
   - [x] Neovim
   - [x] PowerToys
-  - [x] Docker Desktop
-  - [ ] Fastfetch
-  - [ ] Wezterm
-  - [ ] AutoHotKey
-  - [ ] VS Build Tools
-  - [ ] VLC
-  - [ ] Notepad++
-  - [ ] bitwarden
-  - [ ] msys2
-  - [ ] clink (cmd)
   - [x] ripgrep
   - [x] jq
   - [x] fzf
   - [x] bat
-  - [x] less
+  - [x] yt-dlp
   - [x] uv (python)
+  - [x] go
+  - [ ] Wezterm
+  - [ ] AutoHotKey
+  - [ ] VLC
+  - [ ] Notepad++
+  - [ ] bitwarden
+  - [ ] Docker Desktop
+  - [ ] VS Build Tools
+  - [ ] clink (cmd)
+  - [ ] Throttlestop
+
 
 ### Scoop
 
@@ -262,7 +303,8 @@ Remove-Item $app
 $root_download = "$env:userprofile\setup"
 $app = $root_download + "\software\powershell.msi"
 $repo = "powershell/powershell"
-$version = get-github-repo-latest-release "$repo"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
 invoke-webrequest "https://github.com/$repo/releases/download/v$version/powershell-$version-win-x64.msi" -outfile (new-item -path "$app" -force)
 # iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
 start-process -filepath "$app" -Args "/quiet /passive ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_PATH=1" -Wait
@@ -275,13 +317,13 @@ Remove-Item $app
 ```powershell
 $root_download = "$env:userprofile\setup"
 $app = $root_download + "\software\git.exe"
-$repo = "git-for-windows/git"
-$version = get-github-repo-latest-release "$repo"
-$version = $version -split "\.\D+.+"
-$version = $version.split(" ")[0]
-$url = "https://github.com/$repo/releases/download/v$version.windows.1/Git-$version-64-bit.exe"
-invoke-webrequest "https://github.com/$repo/releases/download/v$version.windows.1/Git-$version-64-bit.exe" -outfile (new-item -path "$app" -force)
-start-process -filepath "$app" -args "/VERYSILENT /NORESTART" -wait
+$url =  (invoke-webrequest -usebasicparsing -uri "https://git-scm.com/install/windows" `
+  | select-object -expandproperty links `
+  | where-object {($_.href -match "64-bit.exe")} `
+  | select-object -first 1 `
+  | select-object -expandproperty href) 
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+start-process -filepath "$app" -args "/VERYSILENT /NORESTART" -Verb RunAs -wait
 [System.Environment]::SetEnvironmentVariable('path', "C:\Program Files\Git\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 Remove-Item $app
 
@@ -293,7 +335,8 @@ Remove-Item $app
 $root_download = "$env:userprofile\setup"
 $app = $root_download + "\software\delta.zip"
 $repo = "dandavison/delta"
-$version = get-github-repo-latest-release "$repo"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
 $url = "https://github.com/$repo/releases/download/$version/delta-$version-x86_64-pc-windows-msvc.zip"
 invoke-webrequest $url -outfile (new-item -path "$app" -force)
 expand-archive -path "$app" -destinationpath "$env:localappdata"
@@ -385,7 +428,8 @@ Remove-Item $app
 $root_download = "$env:userprofile\setup"
 $app = $root_download + "\software\neovim.zip"
 $repo = "neovim/neovim"
-$version = get-github-repo-latest-release "$repo"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
 invoke-webrequest "https://github.com/$repo/releases/download/v$version/nvim-win64.zip" -outfile (new-item -path "$app" -force)
 if ((Test-Path $env:localappdata\neovim) -eq $true){
   echo "neovim already exist in localappdata. Deleting..."
@@ -410,12 +454,103 @@ Remove-Item $app
 $root_download = "$env:userprofile\setup"
 $app = $root_download + "\software\powertoys.exe"
 $repo = "microsoft/PowerToys"
-$version = get-github-repo-latest-release "$repo"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
 invoke-webrequest "https://github.com/$repo/releases/download/v$version/PowerToysUserSetup-$version-x64.exe" -outfile (new-item -path "$app" -force)
-#start-process -filepath "$app" -args "/quiet /passive" -wait
-start-process -filepath "$app" -wait
+start-process -filepath "$app" -Verb RunAs -wait
 Remove-Item $app
 
+```
+
+### riprep
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\rg.zip"
+$repo = "BurntSushi/ripgrep"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/$version/ripgrep-$version-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata"
+$temp = get-childitem -path  $env:localappdata -directory -filter "*ripgrep*" | select-object -expandproperty name
+rename-item "$env:localappdata\$temp" "$env:localappdata\ripgrep"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\ripgrep;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+
+```
+
+### jq
+
+```powershell
+$repo = "jqlang/jq"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/$version/jq-win64.exe" -outfile (new-item -path "$env:localappdata\jq\jq.exe" -force)
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\jq;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+```
+
+### fzf
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\fzf.zip"
+$repo = "junegunn/fzf"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/v$version/fzf-$version-windows_amd64.zip" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata\fzf"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\fzf;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+```
+
+### bat
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\bat.zip"
+$repo = "sharkdp/bat"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/v$version/bat-v$version-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata"
+$temp = get-childitem -path  $env:localappdata -directory -filter "*bat*" | select-object -expandproperty name
+rename-item "$env:localappdata\$temp" "$env:localappdata\bat"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\bat;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+```
+
+### yt-dlp
+
+```powershell
+$root_download = "$env:localappdata\programs"
+$app = $root_download + "\yt-dlp.exe"
+$repo = "yt-dlp/yt-dlp"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/$version/yt-dlp.exe" -outfile (new-item -path "$app" -force)
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\Programs;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+```
+
+ ### UV (Python)
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### Go
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\go-windows-amd64.msi"
+$url = "https://go.dev" + (invoke-webrequest -usebasicparsing -uri "https://go.dev/dl/" `
+    | select-object -expandproperty links `
+    | where-object {($_.outerhtml -match "windows-amd64.msi")} `
+    | select-object -first 1 `
+    | select-object -expandproperty href)
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+$install_path = "$env:localappdata\go\"
+start-process -filepath "msiexec" -args "/i $app INSTALLDIR=$install_path /qn /L*V $root_download\software\go_install.log" -wait
+remote-item $app
 ```
 
 ### Docker Desktop
@@ -425,7 +560,7 @@ $root_download = "$env:userprofile\setup"
 $app = $root_download + "\software\docker.exe"
 $url = (invoke-webrequest -usebasicparsing -uri "https://docs.docker.com/desktop/setup/install/windows-install/" | select-object -expandproperty links | where-object {($_.outerhtml -match "amd64")} | select-object -expandproperty href)
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
-start-process -filepath $app -wait install
+start-process -filepath $app -Verb RunAs -wait install
 Remove-Item $app
 
 ```
@@ -460,112 +595,6 @@ Remove-Item -Path $env:userprofile\downloads\vs_installer -Recurse -Force
   - [Create an offline installation](https://learn.microsoft.com/en-us/visualstudio/install/create-an-offline-installation-of-visual-studio)
 
 ### clink (cmd)
-
-### riprep
-
-```powershell
-$root_download = "$env:userprofile\setup"
-$app = $root_download + "\software\rg.zip"
-$repo = "BurntSushi/ripgrep"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/$version/ripgrep-$version-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$app" -force)
-expand-archive -path "$app" -destinationpath "$env:localappdata"
-$temp = get-childitem -path  $env:localappdata -directory -filter "*ripgrep*" | select-object -expandproperty name
-rename-item "$env:localappdata\$temp" "$env:localappdata\ripgrep"
-[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\ripgrep;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
-Remove-Item $app
-
-```
-
-### jq
-
-```powershell
-$repo = "jqlang/jq"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/$version/jq-win64.exe" -outfile (new-item -path "$env:localappdata\jq\jq.exe" -force)
-[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\jq;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
-```
-
-### fzf
-
-```powershell
-$root_download = "$env:userprofile\setup"
-$app = $root_download + "\software\fzf.zip"
-$repo = "junegunn/fzf"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/v$version/fzf-$version-windows_amd64.zip" -outfile (new-item -path "$app" -force)
-expand-archive -path "$app" -destinationpath "$env:localappdata\fzf"
-[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\fzf;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
-Remove-Item $app
-```
-
-### bat
-
-```powershell
-$root_download = "$env:userprofile\setup"
-$app = $root_download + "\software\bat.zip"
-$repo = "sharkdp/bat"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/v$version/bat-v$version-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$app" -force)
-expand-archive -path "$app" -destinationpath "$env:localappdata"
-$temp = get-childitem -path  $env:localappdata -directory -filter "*bat*" | select-object -expandproperty name
-rename-item "$env:localappdata\$temp" "$env:localappdata\bat"
-[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\bat;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
-Remove-Item $app
-```
-
-### less
-
-```powershell
-$root_download = "$env:userprofile\setup"
-$app = $root_download + "\software\less.zip"
-$repo = "jftuga/less-Windows"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/$version/less-x64.zip" -outfile (new-item -path "$app" -force)
-expand-archive -path "$app" -destinationpath "$env:localappdata\less"
-[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\less;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
-Remove-Item $app
-```
-
-### yt-dlp
-
-```powershell
-$root_download = "$env:localappdata\programs"
-$app = $root_download + "\yt-dlp.exe"
-$repo = "yt-dlp/yt-dlp"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/$version/yt-dlp.exe" -outfile (new-item -path "$app" -force)
-[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\Programs;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
-```
-
-
-### Pyenv (Python)
-
-```powershell
-Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
-```
-
- ### UV (Python)
-
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-### Go
-
-```powershell
-$root_download = "$env:userprofile\setup"
-$app = $root_download + "\software\go-windows-amd64.msi"
-$url = "https://go.dev" + (invoke-webrequest -usebasicparsing -uri "https://go.dev/dl/" `
-    | select-object -expandproperty links `
-    | where-object {($_.outerhtml -match "windows-amd64.msi")} `
-    | select-object -first 1 `
-    | select-object -expandproperty href)
-invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
-$install_path = "$env:localappdata\go\"
-start-process -filepath "msiexec" -args "/i $app INSTALLDIR=$install_path /qn /L*V $root_download\software\go_install.log" -wait
-remote-item $app
-```
 
 ### Throttlestop
 
