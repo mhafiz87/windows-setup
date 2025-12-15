@@ -71,9 +71,9 @@
 <summary>Flow</summary>
 
 1. [ ] Perform windows update
-2. [ ] [Enable powershell script execution](#enable-powershell-script-execution)
-3. [ ] Set `Show More` as default
-4. [ ] Change file explorer settings
+1. [ ] [Enable powershell script execution](#enable-powershell-script-execution)
+1. [ ] Set `Show More` as default
+1. [ ] Change file explorer settings
 
 </details>
 
@@ -200,13 +200,12 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
 - Open each console (cmd, powershell, etc) and update the font.
 
 - References:
+
   - https://superuser.com/questions/1347724/how-can-i-add-additional-fonts-to-the-windows-console
   - https://gist.github.com/anthonyeden/0088b07de8951403a643a8485af2709b
   - https://richardspowershellblog.wordpress.com/2008/03/20/special-folders/
 
-
 </details>
-
 
 ## Installing Software(s)
 
@@ -234,53 +233,39 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   ***Pending update***
 
   - Legend
-    * x - ready
-    * O - pending
-    * ! - not available
+    - x - ready
+    - O - pending
+    - ! - not available
 
-
-  | App | Install | Path | Update |
-  |-----|--------|------|--------|
-  | 7-Zip |  x  |  !  |  x  |
-  |   |  x  |  x   |  x   |
-
-
-  - [x] 7-Zip
-  - [x] Powershell 7
-  - [x] Git
-  - [x] Git - Delta
-  - [x] NodeJS
-  - [x] Go
-  - [x] VirtualBox
-  - [x] MSYS2
-  - [x] VSCode
-  - [x] Neovim
-  - [x] PowerToys
-  - [x] ripgrep
-  - [x] jq
-  - [x] fzf
-  - [x] bat
-  - [x] yt-dlp
-  - [x] uv (python)
-  - [x] go
-  - [ ] Wezterm
-  - [ ] AutoHotKey
-  - [ ] VLC
-  - [ ] Notepad++
-  - [ ] bitwarden
-  - [ ] Docker Desktop
-  - [ ] VS Build Tools
-  - [ ] clink (cmd)
-  - [ ] Throttlestop
-
-
-### Scoop
-
-```powershell
-# https://github.com/ScoopInstaller/Scoop
-
-
-```
+  | App            | Install | Path | Update |
+  | :------------- | :-----: | :--: | :----: |
+  | 7-Zip          |    ✓    |  !   |   x    |
+  | PowerShell 7   |    ✓    |  x   |   x    |
+  | Git            |    ✓    |  x   |   x    |
+  | Git Delta      |    ✓    |  x   |   x    |
+  | NodeJS         |    ✓    |  x   |   x    |
+  | Go             |    ✓    |  x   |   x    |
+  | VirtualBox     |    ✓    |  x   |   x    |
+  | MSYS2          |    ✓    |  x   |   x    |
+  | VSCode         |    ✓    |  x   |   x    |
+  | Neovim         |    ✓    |  x   |   x    |
+  | PowerToys      |    ✓    |  x   |   x    |
+  | RipGrep        |    ✓    |  x   |   x    |
+  | JQ             |    ✓    |  x   |   x    |
+  | FZF            |    ✓    |  x   |   x    |
+  | Bat            |    ✓    |  x   |   x    |
+  | yt-dlp         |    ✓    |  x   |   x    |
+  | uv             |    ✓    |  x   |   x    |
+  | Go             |    x    |  x   |   x    |
+  | Wezterm        |    O    |  x   |   x    |
+  | AutoHotKey     |    O    |  x   |   x    |
+  | VLC            |    O    |  x   |   x    |
+  | Notepad++      |    O    |  x   |   x    |
+  | BitWarden      |    O    |  x   |   x    |
+  | Docker Desktop |    O    |  x   |   x    |
+  | VS Build Tools |    O    |  x   |   x    |
+  | Clink(CMD)     |    O    |  x   |   x    |
+  | Throttlestop   |    O    |  x   |   x    |
 
 ### 7-Zip
 
@@ -531,7 +516,7 @@ invoke-webrequest "https://github.com/$repo/releases/download/$version/yt-dlp.ex
 [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\Programs;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 ```
 
- ### UV (Python)
+### UV (Python)
 
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
@@ -568,11 +553,13 @@ Remove-Item $app
 ### VS Build Tools
 
 - Component To Install:
+
   - MSVC v143
   - C++ CMake tools for Windows
   - Windows 10 SDK
 
 - Download build tools from [here](https://visualstudio.microsoft.com/visual-cpp-build-tools/) into Downloads.
+
 - Run below script:
 
 ```powershell
@@ -818,6 +805,7 @@ wsl --install -d Debian
   ```
 
 - References
+
   - [No internet connection Ubuntu-WSL while VPN](https://superuser.com/a/1818812)
   - [How to remove the Win10's PATH from WSL](https://stackoverflow.com/a/51345880)
   - [UV](https://docs.astral.sh/uv/)
@@ -890,7 +878,7 @@ git config --global delta.side-by-side true
     - Theme: OpenDark
     - Size of toolbar icons: Small(16px)
   - Preference Pack Name: OpenPreferences
-  
+
 </details>
 
 ## Gitlab
@@ -929,7 +917,7 @@ git config --global delta.side-by-side true
 
     - Find the IP address; __remove `<` `>`__.
 
-      ``` powershell
+      ```powershell
       docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
       ```
 
@@ -970,13 +958,15 @@ git config --global delta.side-by-side true
   gitlab_rails['gitlab_email_from'] = '<gmail email>'
   gitlab_rails['gitlab_email_display_name'] = '<your name>'
   gitlab_rails['gitlab_email_reply_to'] = '<gmail email>'
-```
+  ```
+
+````
 
 7. Set gitlab root password
 
   ```bash
   gitlab-rake "gitlab:password:reset[root]"
-  ```
+````
 
 - To test sending emails, run the following command:
 
@@ -986,6 +976,7 @@ git config --global delta.side-by-side true
   ```
 
 - References:
+
   - [Install gitlab on Windows with Docker](https://stackoverflow.com/a/66357935)
   - [YouTube: Gmail SMTP Server Settings: Host Username and Password for Projects](https://www.youtube.com/watch?v=I9x0w8cjR_o)
   - [Gmail SMTP Settings: Easy Step-by-Step Setup Guide](https://www.gmass.co/blog/gmail-smtp/)
@@ -1009,6 +1000,7 @@ git config --global delta.side-by-side true
   ```
 
 - Check IP Address
+
   - Find the container ID
 
     ```powershell
@@ -1017,7 +1009,7 @@ git config --global delta.side-by-side true
 
   - Find the IP address; __remove `<` `>`__.
 
-    ``` powershell
+    ```powershell
     docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
     ```
 
@@ -1040,6 +1032,7 @@ git config --global delta.side-by-side true
 - Exit gitlab-runner bash
 
 - References:
+
   - [YouTube - How to register & run GitLab Runner inside a Docker container](https://www.youtube.com/watch?v=JLdPiq0owUM)
   - [Run GitLab Runner in a container](https://docs.gitlab.com/runner/install/docker.html)
   - [https://docs.gitlab.com/runner/register/?tab=Docker](https://docs.gitlab.com/runner/register/?tab=Docker)
