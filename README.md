@@ -742,6 +742,30 @@ go install mvdan.cc/sh/v3/cmd/shfmt@latest
 
 </details>
 
+## Neovim
+
+<details>
+<summary>Neovim</summary>
+
+- Setup neovim so it has at least 2 environments:
+    * production
+    * development
+- To setup multiple environments:
+    * Create folder in `$env:localappdata/nvim-<environment>` | environment = development, other environments name
+    * Create local variable `$env:NVIM_APPNAME = "nvim-<environment>"` in current terminal
+- Example:
+
+    ```powershell
+    # Create neovim for development environment by creating folder in $env:localappdata/nvim-dev
+    mkdir $env:localappdata/nvim-dev
+    # Create local variable in current terminal
+    $env:NVIM_APPNAME = "nvim-dev"
+    # Launch Neovim
+    nvim
+    ```
+
+</details>
+
 ## WSL
 
 <details>
