@@ -233,14 +233,14 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   ***Pending update***
 
   - Legend
-    - x - ready
-    - O - pending
+    - ✓ - ready
+    - x - pending
     - ! - not available
 
   | App            | Install | Path | Update |
   | :------------- | :-----: | :--: | :----: |
   | 7-Zip          |    ✓    |  !   |   x    |
-  | PowerShell 7   |    ✓    |  x   |   x    |
+  | PowerShell 7   |    ✓    |  !   |   !    |
   | Kanata         |    ✓    |  ✓   |   x    |
   | Git            |    ✓    |  x   |   x    |
   | Git Delta      |    ✓    |  x   |   x    |
@@ -258,15 +258,15 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   | yt-dlp         |    ✓    |  x   |   x    |
   | uv             |    ✓    |  x   |   x    |
   | Go             |    x    |  x   |   x    |
-  | Wezterm        |    O    |  x   |   x    |
-  | AutoHotKey     |    O    |  x   |   x    |
-  | VLC            |    O    |  x   |   x    |
-  | Notepad++      |    O    |  x   |   x    |
-  | BitWarden      |    O    |  x   |   x    |
-  | Docker Desktop |    O    |  x   |   x    |
-  | VS Build Tools |    O    |  x   |   x    |
-  | Clink(CMD)     |    O    |  x   |   x    |
-  | Throttlestop   |    O    |  x   |   x    |
+  | Wezterm        |    x    |  x   |   x    |
+  | AutoHotKey     |    x    |  x   |   x    |
+  | VLC            |    x    |  x   |   x    |
+  | Notepad++      |    x    |  x   |   x    |
+  | BitWarden      |    x    |  x   |   x    |
+  | Docker Desktop |    x    |  x   |   x    |
+  | VS Build Tools |    x    |  x   |   x    |
+  | Clink(CMD)     |    x    |  x   |   x    |
+  | Throttlestop   |    x    |  x   |   x    |
 
 ### 7-Zip
 
@@ -304,16 +304,19 @@ Remove-Item $app
 $root_download = "$env:userprofile\setup"
 $app = $root_download + "\software\kanata.zip"
 $repo = "jtroo/kanata"
+$install_path = "$env:localappdata\kanata"
 $response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
 $version = $response.tag_name
+
 invoke-webrequest "https://github.com/$repo/releases/download/$version/kanata-windows-binaries-x64-$version.zip" -outfile (new-item -path "$app" -force)
-expand-archive -path "$app" -destinationpath "$env:localappdata/kanata"
-copy-item -path "$env:localappdata/kanata/kanata_windows_gui_winIOv2_x64.exe" "$env:localappdata/kanata/kanata.exe"
+Get-Item -LiteralPath "$env:localappdata/kanata" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+expand-archive -path "$app" -destinationpath "$install_path"
+copy-item -path "$install_path/kanata_windows_gui_winIOv2_x64.exe" "$install_path/kanata.exe"
 $exist_env = [System.Environment]::GetEnvironmentVariable('path', "User") -Like "*kanata*"
 if ($exist_env -eq $true) {
   echo "kanata already exist in path"
 }else{
-  [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\kanata;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+  [System.Environment]::SetEnvironmentVariable('path', $install_path + ";" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 }
 Remove-Item $app
 
