@@ -241,6 +241,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   | :------------- | :-----: | :--: | :----: |
   | 7-Zip          |    ✓    |  !   |   x    |
   | PowerShell 7   |    ✓    |  x   |   x    |
+  | Kanata         |    ✓    |  ✓   |   x    |
   | Git            |    ✓    |  x   |   x    |
   | Git Delta      |    ✓    |  x   |   x    |
   | NodeJS         |    ✓    |  x   |   x    |
@@ -248,7 +249,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   | VirtualBox     |    ✓    |  x   |   x    |
   | MSYS2          |    ✓    |  x   |   x    |
   | VSCode         |    ✓    |  x   |   x    |
-  | Neovim         |    ✓    |  x   |   x    |
+  | Neovim         |    ✓    |  ✓   |   x    |
   | PowerToys      |    ✓    |  x   |   x    |
   | RipGrep        |    ✓    |  x   |   x    |
   | JQ             |    ✓    |  x   |   x    |
@@ -293,6 +294,27 @@ $version = $response.tag_name
 invoke-webrequest "https://github.com/$repo/releases/download/v$version/powershell-$version-win-x64.msi" -outfile (new-item -path "$app" -force)
 # iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Quiet"
 start-process -filepath "$app" -Args "/quiet /passive ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_PATH=1" -Wait
+Remove-Item $app
+
+```
+
+### Kanata
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\kanata.zip"
+$repo = "jtroo/kanata"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/$version/kanata-windows-binaries-x64-$version.zip" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata/kanata"
+copy-item -path "$env:localappdata/kanata/kanata_windows_gui_winIOv2_x64.exe" "$env:localappdata/kanata/kanata.exe"
+$exist_env = [System.Environment]::GetEnvironmentVariable('path', "User") -Like "*kanata*"
+if ($exist_env -eq $true) {
+  echo "kanata already exist in path"
+}else{
+  [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\kanata;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+}
 Remove-Item $app
 
 ```
@@ -748,21 +770,25 @@ go install mvdan.cc/sh/v3/cmd/shfmt@latest
 <summary>Neovim</summary>
 
 - Setup neovim so it has at least 2 environments:
-    * production
-    * development
+
+  - production
+  - development
+
 - To setup multiple environments:
-    * Create folder in `$env:localappdata/nvim-<environment>` | environment = development, other environments name
-    * Create local variable `$env:NVIM_APPNAME = "nvim-<environment>"` in current terminal
+
+  - Create folder in `$env:localappdata/nvim-<environment>` | environment = development, other environments name
+  - Create local variable `$env:NVIM_APPNAME = "nvim-<environment>"` in current terminal
+
 - Example:
 
-    ```powershell
-    # Create neovim for development environment by creating folder in $env:localappdata/nvim-dev
-    mkdir $env:localappdata/nvim-dev
-    # Create local variable in current terminal
-    $env:NVIM_APPNAME = "nvim-dev"
-    # Launch Neovim
-    nvim
-    ```
+  ```powershell
+  # Create neovim for development environment by creating folder in $env:localappdata/nvim-dev
+  mkdir $env:localappdata/nvim-dev
+  # Create local variable in current terminal
+  $env:NVIM_APPNAME = "nvim-dev"
+  # Launch Neovim
+  nvim
+  ```
 
 </details>
 
