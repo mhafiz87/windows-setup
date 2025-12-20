@@ -234,39 +234,39 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
 
   - Legend
     - ✓ - ready
-    - x - pending
-    - ! - not available
+    - ! - pending
+    - x - not available
 
   | App            | Install | Path | Update |
   | :------------- | :-----: | :--: | :----: |
-  | 7-Zip          |    ✓    |  !   |   x    |
-  | PowerShell 7   |    ✓    |  !   |   !    |
-  | Kanata         |    ✓    |  ✓   |   x    |
-  | Git            |    ✓    |  x   |   x    |
-  | Git Delta      |    ✓    |  x   |   x    |
+  | 7-Zip          |    ✓    |  x   |   x    |
+  | PowerShell 7   |    ✓    |  x   |   x    |
+  | Kanata         |    ✓    |  ✓   |   !    |
+  | Git            |    ✓    |  ✓   |   x    |
+  | Git Delta      |    ✓    |  ✓   |   !    |
   | NodeJS         |    ✓    |  x   |   x    |
   | Go             |    ✓    |  x   |   x    |
   | VirtualBox     |    ✓    |  x   |   x    |
-  | MSYS2          |    ✓    |  x   |   x    |
+  | MSYS2          |    ✓    |  !   |   x    |
   | VSCode         |    ✓    |  x   |   x    |
-  | Neovim         |    ✓    |  ✓   |   x    |
+  | Neovim         |    ✓    |  ✓   |   !    |
   | PowerToys      |    ✓    |  x   |   x    |
-  | RipGrep        |    ✓    |  x   |   x    |
-  | JQ             |    ✓    |  x   |   x    |
-  | FZF            |    ✓    |  x   |   x    |
-  | Bat            |    ✓    |  x   |   x    |
-  | yt-dlp         |    ✓    |  x   |   x    |
-  | uv             |    ✓    |  x   |   x    |
-  | Go             |    x    |  x   |   x    |
-  | Wezterm        |    x    |  x   |   x    |
-  | AutoHotKey     |    x    |  x   |   x    |
-  | VLC            |    x    |  x   |   x    |
-  | Notepad++      |    x    |  x   |   x    |
-  | BitWarden      |    x    |  x   |   x    |
-  | Docker Desktop |    x    |  x   |   x    |
-  | VS Build Tools |    x    |  x   |   x    |
-  | Clink(CMD)     |    x    |  x   |   x    |
-  | Throttlestop   |    x    |  x   |   x    |
+  | RipGrep        |    ✓    |  !   |   @    |
+  | JQ             |    ✓    |  !   |   @    |
+  | FZF            |    ✓    |  !   |   @    |
+  | Bat            |    ✓    |  @   |   @    |
+  | yt-dlp         |    ✓    |  @   |   @    |
+  | uv             |    ✓    |  @   |   @    |
+  | Go             |    @    |  @   |   @    |
+  | Wezterm        |    @    |  @   |   @    |
+  | AutoHotKey     |    @    |  @   |   @    |
+  | VLC            |    @    |  @   |   @    |
+  | Notepad++      |    @    |  @   |   @    |
+  | BitWarden      |    @    |  @   |   @    |
+  | Docker Desktop |    @    |  @   |   @    |
+  | VS Build Tools |    @    |  @   |   @    |
+  | Clink(CMD)     |    @    |  @   |   @    |
+  | Throttlestop   |    @    |  @   |   @    |
 
 ### 7-Zip
 
@@ -345,14 +345,20 @@ Remove-Item $app
 $root_download = "$env:userprofile\setup"
 $app = $root_download + "\software\delta.zip"
 $repo = "dandavison/delta"
+$install_path = "$env:localappdata\delta"
 $response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
 $version = $response.tag_name
 $url = "https://github.com/$repo/releases/download/$version/delta-$version-x86_64-pc-windows-msvc.zip"
 invoke-webrequest $url -outfile (new-item -path "$app" -force)
 expand-archive -path "$app" -destinationpath "$env:localappdata"
 $temp = get-childitem -path  $env:localappdata -directory -filter "*delta*" | select-object -expandproperty name
-rename-item "$env:localappdata\$temp" "$env:localappdata\delta"
-[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\delta;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+rename-item "$env:localappdata\$temp" "$install_path"
+$exist_env = [System.Environment]::GetEnvironmentVariable('path', "User") -Like "*delta*"
+if ($exist_env -eq $true) {
+  echo "delta already exist in path"
+}else{
+  [System.Environment]::SetEnvironmentVariable('path', $install_path + ";" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+}
 Remove-Item $app
 
 ```
