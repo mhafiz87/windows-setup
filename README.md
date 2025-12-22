@@ -248,6 +248,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   | Go             |    ✓    |  x   |   x    |
   | VirtualBox     |    ✓    |  x   |   x    |
   | MSYS2          |    ✓    |  !   |   x    |
+  | Rust           |    ✓    |  x   |   x    |
   | VSCode         |    ✓    |  x   |   x    |
   | Neovim         |    ✓    |  ✓   |   !    |
   | PowerToys      |    ✓    |  x   |   x    |
@@ -422,6 +423,17 @@ $url = (invoke-webrequest -usebasicparsing -uri "https://www.msys2.org/#installa
   | select-object -first 1 `
   | select-object -expandproperty href)
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+start-process -filepath "$app" -Verb RunAs -wait
+Remove-Item $app
+
+```
+
+### Rust
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\rustup.exe"
+invoke-webrequest "https://win.rustup.rs/" -outfile (new-item -path "$app" -force)
 start-process -filepath "$app" -Verb RunAs -wait
 Remove-Item $app
 
