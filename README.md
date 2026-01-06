@@ -623,6 +623,28 @@ Remove-Item -Path $env:userprofile\downloads\vs_installer -Recurse -Force
 - References:
   - [List of VS components](https://learn.microsoft.com/en-us/visualstudio/install/workload-and-component-ids)
   - [Create an offline installation](https://learn.microsoft.com/en-us/visualstudio/install/create-an-offline-installation-of-visual-studio)
+ 
+### Freecad
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\freecad.exe"
+$repo = "FreeCAD/FreeCAD"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+$url = "https://github.com/$repo/releases/download/$version/FreeCAD_$version-conda-Windows-x86_64-installer-1.exe"
+invoke-webrequest $url -outfile (new-item -path "$app" -force)
+Start-Process -FilePath $app -Verb RunAs -Wait
+$exist_env = [System.Environment]::GetEnvironmentVariable('path', "User") -Like "*freecad*"
+if ($exist_env -eq $true) {
+  echo "freecad already exist in path"
+}else{
+  [System.Environment]::SetEnvironmentVariable('path', 'C:\Program Files\FreeCAD 1.0\bin' + ";" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+  echo "add freecad into environment"
+}
+Remove-Item $app
+
+```
 
 ### clink (cmd)
 
