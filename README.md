@@ -435,6 +435,7 @@ if ($exist_env -eq $true) {
 }else{
   [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\zig;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 }
+Remove-Item $app
 
 ```
 
@@ -450,6 +451,7 @@ $url = (invoke-webrequest -usebasicparsing -uri "https://doc.rust-lang.org/cargo
   | select-object -expandproperty href)
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
 start-process -filepath "$app" -wait
+Remove-Item $app
 
 ```
 
@@ -647,6 +649,19 @@ Remove-Item $app
 - Run below script:
 
 ```powershell
+$root_download = "$env:userprofile\setup"
+new-item -itemtype directory -path "$root_download\vsinstaller"
+$app = "$root_download\vsinstaller\vs_BuildTools.exe"
+$url = (invoke-webrequest -usebasicparsing -uri "https://visualstudio.microsoft.com/visual-cpp-build-tools" `
+  | select-object -expandproperty links `
+  | where-object {($_.href -match "BuildTools.exe")} `
+  | select-object -first 1 `
+  | select-object -expandproperty href)
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+Invoke-Expression "$app --layout '$root_download\vslayout' --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project"
+Invoke-Expression "$app --layout '$root_download\vsinstaller\vs_BuildTools.exe' --noWeb --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project"
+
+# Reference
 cd $env:userprofile\downloads
 new-item -itemtype directory -path vsinstaller
 .\vs_buildtools.exe --layout e:\vsinstaller --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project --add Microsoft.VisualStudio.Component.Windows11SDK.22621
