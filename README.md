@@ -659,7 +659,7 @@ $url = (invoke-webrequest -usebasicparsing -uri "https://visualstudio.microsoft.
   | select-object -expandproperty href)
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
 Invoke-Expression "$app --layout '$root_download\vslayout' --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project"
-Invoke-Expression "$app --layout '$root_download\vsinstaller\vs_BuildTools.exe' --noWeb --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project"
+Invoke-Expression "$root_download\vslayout\vs_BuildTools.exe --noWeb --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project"
 
 # Reference
 cd $env:userprofile\downloads
