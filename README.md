@@ -248,6 +248,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   | Go             |    ✓    |  x   |   x    |
   | VirtualBox     |    ✓    |  x   |   x    |
   | Zig            |    ✓    |  ✓   |   x    |
+  | Cargo          |    ✓    |  ✓   |   x    |
   | MSYS2          |    ✓    |  !   |   x    |
   | Rust           |    ✓    |  x   |   x    |
   | VSCode         |    ✓    |  x   |   x    |
@@ -434,6 +435,21 @@ if ($exist_env -eq $true) {
 }else{
   [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\zig;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 }
+
+```
+
+### Cargo
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\rustup-init.exe"
+$url = (invoke-webrequest -usebasicparsing -uri "https://doc.rust-lang.org/cargo/getting-started/installation.html" `
+  | select-object -expandproperty links `
+  | where-object {($_.href -match "win.rustup.rs")} `
+  | select-object -first 1 `
+  | select-object -expandproperty href)
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+start-process -filepath "$app" -wait
 
 ```
 
