@@ -247,6 +247,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   | NodeJS         |    ✓    |  x   |   x    |
   | Go             |    ✓    |  x   |   x    |
   | VirtualBox     |    ✓    |  x   |   x    |
+  | Zig            |    ✓    |  ✓   |   x    |
   | MSYS2          |    ✓    |  !   |   x    |
   | Rust           |    ✓    |  x   |   x    |
   | VSCode         |    ✓    |  x   |   x    |
@@ -409,6 +410,30 @@ $url = (invoke-webrequest -usebasicparsing -uri "https://www.virtualbox.org/wiki
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
 start-process -filepath "$app" -Verb RunAs -wait
 Remove-Item $app
+
+```
+
+### Zig
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\zig.zip"
+$url = (invoke-webrequest -usebasicparsing -uri "https://ziglang.org/download" `
+  | select-object -expandproperty links `
+  | where-object {($_.href -match "zig-x86_64-windows")} `
+  | select-object -first 1 `
+  | select-object -expandproperty href)
+invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata\zig"
+$temp = Get-ChildItem -Path "$env:localappdata\zig" -Directory | Select-Object -ExpandProperty Name
+Move-Item -Path "$env:localappdata\zig\$temp\*" -Destination "$env:localappdata\zig\" -Force
+Remove-Item "$env:localappdata\zig\$temp"
+$exist_env = [System.Environment]::GetEnvironmentVariable('path', "User") -Like "*zig*"
+if ($exist_env -eq $true) {
+  echo "zig already exist in path"
+}else{
+  [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\zig;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+}
 
 ```
 
