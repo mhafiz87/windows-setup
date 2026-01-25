@@ -253,6 +253,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Conso
   | Rust           |    ✓    |  x   |   x    |
   | VSCode         |    ✓    |  x   |   x    |
   | Neovim         |    ✓    |  ✓   |   !    |
+  | TreeSitterCLI  |    ✓    |  ✓   |   !    |
   | PowerToys      |    ✓    |  x   |   x    |
   | RipGrep        |    ✓    |  !   |   @    |
   | JQ             |    ✓    |  !   |   @    |
@@ -516,6 +517,31 @@ if ($exist_env -eq $true) {
   [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\neovim\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 }
 Remove-Item $app
+expand-archive -path "$app" -destinationpath "$env:userprofile\.local\bin"
+
+```
+
+### TreeSitterCLI
+
+```powershell
+$pathTo7z = "C:\Program Files\7-Zip\7z.exe"
+Set-Alias 7zip $pathTo7z
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\tree-sitter.gz"
+$install_path = "$env:userprofile\.local\bin"
+$repo = "tree-sitter/tree-sitter"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/$version/tree-sitter-windows-x64.gz" -outfile (new-item -path "$app" -force)
+New-Item -Path "$install_path" -ItemType Directory -Force | Out-Null
+Invoke-Expression "& 7zip x '$app' -o'$install_path'"
+Remove-Item $app
+$exist_env = [System.Environment]::GetEnvironmentVariable('path', "User") -Like "*.local*"
+if ($exist_env -eq $true) {
+  echo "$env:userprofile\.local\bin already exist in path"
+}else{
+  [System.Environment]::SetEnvironmentVariable('path', $env:userprofile + "\.local\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+}
 
 ```
 
@@ -652,14 +678,15 @@ Remove-Item $app
 $root_download = "$env:userprofile\setup"
 new-item -itemtype directory -path "$root_download\vsinstaller"
 $app = "$root_download\vsinstaller\vs_BuildTools.exe"
+$components = "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project --add Microsoft.VisualStudio.Component.VC.Llvm.Clang"
 $url = (invoke-webrequest -usebasicparsing -uri "https://visualstudio.microsoft.com/visual-cpp-build-tools" `
   | select-object -expandproperty links `
   | where-object {($_.href -match "BuildTools.exe")} `
   | select-object -first 1 `
   | select-object -expandproperty href)
 invoke-webrequest "$url" -outfile (new-item -path "$app" -force)
-Invoke-Expression "$app --layout '$root_download\vslayout' --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project"
-Invoke-Expression "$root_download\vslayout\vs_BuildTools.exe --noWeb --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.CMake.Project"
+Invoke-Expression "$app --layout '$root_download\vslayout' $components"
+Invoke-Expression "$root_download\vslayout\vs_BuildTools.exe --noWeb -$components"
 
 # Reference
 cd $env:userprofile\downloads
