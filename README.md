@@ -145,6 +145,13 @@ reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\
   Add-Content -Path $env:windir\System32\drivers\etc\hosts -Value "`n127.0.0.1`tlocalhost" -Force
   ```
 
+### Alias HOME to USERPROFILE
+
+```powershell
+[System.Environment]::SetEnvironmentVariable("HOME", $env:USERPROFILE, "User")
+
+```
+
 ### Fonts
 
 - Install fonts for overall use.
