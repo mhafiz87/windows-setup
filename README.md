@@ -169,31 +169,33 @@ function get-github-repo-latest-release {
     return $version
 }
 
-$sourcedir   = "$env:userprofile/setup/fonts"
-
 # Font - Fira Code, JetBrainsMono, Caskaydia Cove
+$download_path = "$env:userprofile/setup/fonts"
 $repo = "ryanoasis/nerd-fonts"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/v$version/JetBrainsMono.zip" `
- -outfile (new-item -path "$sourcedir\JetBrainsMono.zip" -force)
-
-get-childitem -path $sourcedir | foreach {
-    expand-archive -path $_.fullname -destinationpath "$sourcedir" -force
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/$version/JetBrainsMono.zip" `
+ -outfile (new-item -path "$download_path\JetBrainsMono.zip" -force)
+get-childitem -path $download_path | foreach {
+    expand-archive -path $_.fullname -destinationpath "$download_path" -force
 }
+remove-item "$download_path/JetBrainsMono.zip"
 
 # Only copy below lines if filter is correct, install manually if unsure.
 $destination = (new-object -comobject shell.application).namespace(0x14)
 # filter filename that contains `font-`, and does not include NL
-get-childitem -path $sourcedir -filter "*font-*" | where-object {$_.name -match "^((?!NL).)*$"} | foreach {
+get-childitem -path $download_path -filter "*font-*" | where-object {$_.name -match "^((?!NL).)*$"} | foreach {
     # install font
-    $destination.copyhere($_.fullname,0x10)
+    echo $_.fullname
+    # $destination.copyhere($_.fullname,0x10)
 }
 # filter filename that contains `fontmono-`, and does not include NL
-get-childitem -path $sourcedir -filter "*fontmono-*" | where-object {$_.name -match "^((?!NL).)*$"} | foreach {
-    # install font
-    $destination.copyhere($_.fullname,0x10)
-}
-remove-item -path "$sourcedir/*" -recurse -force
+# get-childitem -path $download_path -filter "*fontmono-*" | where-object {$_.name -match "^((?!NL).)*$"} | foreach {
+#    # install font
+#    $destination.copyhere($_.fullname,0x10)
+#}
+
+remove-item -path "$download_path/*" -recurse -force
 
 ```
 
