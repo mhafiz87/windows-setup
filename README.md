@@ -511,7 +511,7 @@ $app = $root_download + "\software\neovim.zip"
 $repo = "neovim/neovim"
 $response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
 $version = $response.tag_name
-invoke-webrequest "https://github.com/$repo/releases/download/v$version/nvim-win64.zip" -outfile (new-item -path "$app" -force)
+invoke-webrequest "https://github.com/$repo/releases/download/$version/nvim-win64.zip" -outfile (new-item -path "$app" -force)
 if ((Test-Path $env:localappdata\neovim) -eq $true){
   echo "neovim already exist in localappdata. Deleting..."
   Remove-Item -Path $env:localappdata\neovim -Recurse -Force
@@ -526,7 +526,6 @@ if ($exist_env -eq $true) {
   [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\neovim\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 }
 Remove-Item $app
-expand-archive -path "$app" -destinationpath "$env:userprofile\.local\bin"
 
 ```
 
