@@ -182,18 +182,32 @@ get-childitem -path $download_path | foreach {
 remove-item "$download_path/JetBrainsMono.zip"
 
 # Only copy below lines if filter is correct, install manually if unsure.
-$destination = (new-object -comobject shell.application).namespace(0x14)
+# $destination = (new-object -comobject shell.application).namespace(0x14)
 # filter filename that contains `font-`, and does not include NL
 get-childitem -path $download_path -filter "*font-*" | where-object {$_.name -match "^((?!NL).)*$"} | foreach {
     # install font
-    echo $_.fullname
+    # echo $_.fullname
+    Install-Font -Path $_.fullname
     # $destination.copyhere($_.fullname,0x10)
 }
-# filter filename that contains `fontmono-`, and does not include NL
-# get-childitem -path $download_path -filter "*fontmono-*" | where-object {$_.name -match "^((?!NL).)*$"} | foreach {
-#    # install font
-#    $destination.copyhere($_.fullname,0x10)
-#}
+# # filter filename that contains `fontmono-`, and does not include NL
+# # get-childitem -path $download_path -filter "*fontmono-*" | where-object {$_.name -match "^((?!NL).)*$"} | foreach {
+# #    # install font
+# #    $destination.copyhere($_.fullname,0x10)
+# #}
+
+$download_path = "$env:userprofile/setup/fonts"
+$repo = "microsoft/cascadia-code"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/$version/CascadiaCode-$($version.substring(1)).zip" `
+ -outfile (new-item -path "$download_path\CascadiaCode.zip" -force)
+get-childitem -path $download_path | foreach {
+    expand-archive -path $_.fullname -destinationpath "$download_path" -force
+}
+remove-item "$download_path/CascadiaCode.zip"
+Install-Font -Path "$download_path/ttf/CascadiaCodeNF.ttf"
+Install-Font -Path "$download_path/ttf/CascadiaCodeNFItalic.ttf"
 
 remove-item -path "$download_path/*" -recurse -force
 
