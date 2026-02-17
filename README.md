@@ -779,15 +779,38 @@ Remove-Item $app
 
 ### LuaLS
 
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\delta.zip"
+$repo = "dandavison/delta"
+$install_path = "$env:localappdata\delta"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+$url = "https://github.com/$repo/releases/download/$version/delta-$version-x86_64-pc-windows-msvc.zip"
+invoke-webrequest $url -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata"
+$temp = get-childitem -path  $env:localappdata -directory -filter "*delta*" | select-object -expandproperty name
+rename-item "$env:localappdata\$temp" "$install_path"
+$exist_env = [System.Environment]::GetEnvironmentVariable('path', "User") -Like "*delta*"
+if ($exist_env -eq $true) {
+  echo "delta already exist in path"
+}else{
+  [System.Environment]::SetEnvironmentVariable('path', $install_path + ";" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+}
+Remove-Item $app
+
 ```powershell
 if(test-path -path $env:userprofile\lsp\luals){remove-item -path "$env:userprofile\lsp\luals" -recurse -force}
-$root_download = "$env:userprofile\lsp"
+$root_download = "$env:userprofile\.local\bin"
 $lsp = $root_download + "\luals.zip"
 $repo = "LuaLS/lua-language-server"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/$version/lua-language-server-$version-win32-x64.zip" -outfile (new-item -path "$lsp" -force)
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+$url = "https://github.com/$repo/releases/download/$version/lua-language-server-$version-win32-x64.zip"
+invoke-webrequest $url -outfile (new-item -path "$lsp" -force)
 expand-archive -path "$lsp" -destinationpath "$root_download\luals"
 Remove-Item $lsp
+if(test-path -path "$env:userprofile/.local/bin/lua-language-server.exe"){remove-item -path "$env:userprofile/.local/bin/lua-language-server.exe" -force}
+new-item -itemtype symboliclink -path "$env:userprofile/.local/bin/lua-language-server.exe" -target "$env:userprofile/.local/bin/luals/binlua-language-server.exe" -force
 [System.Environment]::SetEnvironmentVariable('path', "$root_download\luals\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 ```
 
