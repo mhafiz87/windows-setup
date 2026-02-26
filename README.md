@@ -694,9 +694,9 @@ $url = "https://aka.ms/vs/18/Stable/vs_community.exe"
 invoke-webrequest $url -outfile (new-item -path "$app" -force)
 $components = "--add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.CMake.Project --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
 Invoke-Expression "$app --layout '$root_download\vslayout' $components"
-$components = @("--layout", "$root_download\vslayout","--add", "Microsoft.VisualStudio.Workload.NativeDesktop", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64")
+$components = @("--layout", "$root_download\vslayout","--add", "Microsoft.VisualStudio.Workload.NativeDesktop", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows11SDK.26100")
 Start-Process -FilePath "$app" -ArgumentList ($components -join " ") -Wait
-$components = @("--add", "Microsoft.VisualStudio.Workload.NativeDesktop", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64")
+$components = @("--add", "Microsoft.VisualStudio.Workload.NativeDesktop", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows11SDK.26100")
 Start-Process -FilePath "$root_download\vslayout\vs_setup.exe" -ArgumentList ($components -join " ") -Wait
 
 ```
