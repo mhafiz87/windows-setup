@@ -684,6 +684,26 @@ Remove-Item $app
 
 ```
 
+### VS Community
+
+```powershell
+$root_download = "$env:userprofile\setup"
+new-item -itemtype directory -path "$root_download\vs_community.exe"
+$app = "$root_download\vsinstaller\vs_community.exe"
+$url = "https://aka.ms/vs/18/Stable/vs_community.exe"
+invoke-webrequest $url -outfile (new-item -path "$app" -force)
+$components = "--add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.CMake.Project --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+Invoke-Expression "$app --layout '$root_download\vslayout' $components"
+$components = @("--layout", "$root_download\vslayout","--add", "Microsoft.VisualStudio.Workload.NativeDesktop", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64")
+Start-Process -FilePath "$app" -ArgumentList ($components -join " ") -Wait
+$components = @("--add", "Microsoft.VisualStudio.Workload.NativeDesktop", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64")
+Start-Process -FilePath "$root_download\vslayout\vs_setup.exe" -ArgumentList ($components -join " ") -Wait
+
+```
+
+- References
+  - [Direct Download Link](https://gist.github.com/Chenx221/6f4ed72cd785d80edb0bc50c9921daf7)
+
 ### VS Build Tools
 
 - Component To Install:
