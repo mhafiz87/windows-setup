@@ -656,6 +656,12 @@ invoke-webrequest "https://github.com/$repo/releases/download/$version/yt-dlp.ex
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
+### Minio Client (MC)
+
+```powershell
+Invoke-WebRequest -Uri "https://dl.min.io/client/mc/release/windows-amd64/mc.exe" -OutFile $env:userprofile/.local/bin/mc.exe
+```
+
 ### Go
 
 ```powershell
