@@ -495,6 +495,24 @@ Remove-Item $app
 
 ```
 
+- Open `MSYS2 UCRT64` terminal to install recommended tools:
+
+  ```bash
+  pacman -S --needed \
+    mingw-w64-ucrt-x86_64-gcc
+  ```
+
+- Open `powershell` to add path to variable:
+
+  ```powershell
+  $exist_env = [System.Environment]::GetEnvironmentVariable('path', "User") -Like "*ucrt64\bin*"
+  if ($exist_env -eq $true) {
+    echo "ucrt64\bin already exist in path"
+  }else{
+    [System.Environment]::SetEnvironmentVariable('path', "D:\msys64\ucrt64\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+  }
+  ```
+
 ### Rust
 
 ```powershell
