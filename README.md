@@ -656,6 +656,23 @@ rename-item "$env:localappdata\$temp" "$env:localappdata\bat"
 Remove-Item $app
 ```
 
+### fd
+
+```powershell
+$root_download = "$env:userprofile\setup"
+$app = $root_download + "\software\fd.zip"
+$repo = "sharkdp/fd"
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+invoke-webrequest "https://github.com/$repo/releases/download/$version/fd-$version-x86_64-pc-windows-msvc.zip" -outfile (new-item -path "$app" -force)
+expand-archive -path "$app" -destinationpath "$env:localappdata"
+$temp = get-childitem -path  $env:localappdata -directory -filter "*fd*" | select-object -expandproperty name
+rename-item "$env:localappdata\$temp" "$env:localappdata\fd"
+[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\fd;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+Remove-Item $app
+
+```
+
 ### yt-dlp
 
 ```powershell
