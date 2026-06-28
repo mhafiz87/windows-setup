@@ -325,6 +325,19 @@ Remove-Item $app
 
 ```
 
+Plugins to install:
+
+```powershell
+foreach ($module in @("PSReadLine", "Terminal-Icons", "7Zip4Powershell", "PSFzf", "PSTree", "Fonts", "ps-color-scripts", "PSReadExif")) {
+    Write-Host "Checking for module: $module"
+    if (-not (Get-Module -ListAvailable -Name $module)) {
+        Install-PSResource -Name $module -Scope CurrentUser -Reinstall -TrustRepository
+    }
+    Write-Host "`e[A`r`e[K`e[A"
+}
+
+```
+
 ### Kanata
 
 ```powershell
