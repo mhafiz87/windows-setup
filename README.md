@@ -646,11 +646,19 @@ $root_download = "$env:userprofile\setup"
 $app = $root_download + "\software\fzf.zip"
 $repo = "junegunn/fzf"
 $response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
-$version = $response.tag_name
-invoke-webrequest "https://github.com/$repo/releases/download/v$version/fzf-$version-windows_amd64.zip" -outfile (new-item -path "$app" -force)
+$version = $response.tag_name.remove(0,1)
+$download_url = "https://github.com/$repo/releases/download/v$version/fzf-$version-windows_amd64.zip"
+echo "$download_url"
+invoke-webrequest $download_url -outfile (new-item -path "$app" -force)
 expand-archive -path "$app" -destinationpath "$env:localappdata\fzf"
-[System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\fzf;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+$exist_env = [System.Environment]::GetEnvironmentVariable('path', "User") -Like "*fzf*"
+if ($exist_env -eq $true) {
+  echo "fzf already exist in path"
+}else{
+  [System.Environment]::SetEnvironmentVariable('path', $env:localappdata + "\fzf;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+}
 Remove-Item $app
+
 ```
 
 ### bat
