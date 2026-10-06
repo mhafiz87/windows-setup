@@ -11,32 +11,39 @@
     - [File Explorer](#file-explorer)
     - [Settings](#settings)
     - [Add Webpage To Host](#add-webpage-to-host)
+    - [Alias HOME to USERPROFILE](#alias-home-to-userprofile)
     - [Fonts](#fonts)
   - [Installing Software(s)](#installing-softwares)
-    - [Scoop](#scoop)
     - [7-Zip](#7-zip)
     - [Powershell 7](#powershell-7)
+    - [Kanata](#kanata)
     - [Git](#git)
     - [Git - Delta](#git---delta)
     - [NodeJS (as admin)](#nodejs-as-admin)
     - [Go (as admin)](#go-as-admin)
     - [Oracle VirtualBox (as admin)](#oracle-virtualbox-as-admin)
+    - [Zig](#zig)
+    - [Cargo](#cargo)
     - [MSYS2 (as admin)](#msys2-as-admin)
+    - [Rust](#rust)
     - [VS Code](#vs-code)
     - [Neovim](#neovim)
+    - [TreeSitterCLI](#treesittercli)
     - [PowerToys](#powertoys)
-    - [Docker Desktop](#docker-desktop)
-    - [VS Build Tools](#vs-build-tools)
-    - [clink (cmd)](#clink-cmd)
     - [riprep](#riprep)
     - [jq](#jq)
     - [fzf](#fzf)
     - [bat](#bat)
-    - [less](#less)
+    - [fd](#fd)
     - [yt-dlp](#yt-dlp)
-    - [Pyenv (Python)](#pyenv-python)
     - [UV (Python)](#uv-python)
+    - [Minio Client (MC)](#minio-client-mc)
     - [Go](#go)
+    - [Docker Desktop](#docker-desktop)
+    - [VS Community](#vs-community)
+    - [VS Build Tools](#vs-build-tools)
+    - [Freecad](#freecad)
+    - [clink (cmd)](#clink-cmd)
     - [Throttlestop](#throttlestop)
   - [Installing Language Server Protocol (LSP)](#installing-language-server-protocol-lsp)
     - [LuaLS](#luals)
@@ -51,11 +58,12 @@
     - [YAML](#yaml)
     - [bash-language-server](#bash-language-server)
     - [shfmt (requires go)](#shfmt-requires-go)
+  - [Neovim](#neovim-1)
   - [WSL](#wsl)
     - [In Windows](#in-windows)
     - [In Linux](#in-linux)
-  - [Git](#git)
-  - [FreeCAD](#freecad)
+  - [Git](#git-1)
+  - [FreeCAD](#freecad-1)
     - [Addon Manager](#addon-manager)
     - [Macro](#macro)
     - [Preferences](#preferences)
@@ -904,9 +912,15 @@ if(test-path -path $env:userprofile\lsp\marksman){remove-item -path "$env:userpr
 $root_download = "$env:userprofile\lsp"
 $lsp = $root_download + "\marksman\marksman.exe"
 $repo = "artempyanykh/marksman"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/$version/marksman.exe" -outfile (new-item -path "$lsp" -force)
-[System.Environment]::SetEnvironmentVariable('path', "$root_download\marksman;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+$url = "https://github.com/$repo/releases/download/$version/marksman.exe"
+invoke-webrequest $url  -outfile (new-item -path "$lsp" -force)
+if(Get-Command -Name marksman -ErrorAction SilentlyContinue){
+  Write-Host "stylua exist in path"
+}else{
+  [System.Environment]::SetEnvironmentVariable('path', "$root_download\marksman;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+}
 ```
 
 ### Stylua
@@ -938,11 +952,17 @@ if(test-path -path $env:userprofile\lsp\taplo){remove-item -path "$env:userprofi
 $root_download = "$env:userprofile\lsp"
 $lsp = $root_download + "\taplo.zip"
 $repo = "tamasfe/taplo"
-$version = get-github-repo-latest-release "$repo"
-invoke-webrequest "https://github.com/$repo/releases/download/$version/taplo-windows-x86_64.zip" -outfile (new-item -path "$lsp" -force)
+$response = curl -s "https://api.github.com/repos/$repo/releases/latest" | ConvertFrom-Json
+$version = $response.tag_name
+$url = "https://github.com/$repo/releases/download/$version/taplo-windows-x86_64.zip"
+invoke-webrequest $url -outfile (new-item -path "$lsp" -force)
 expand-archive -path "$lsp" -destinationpath "$root_download\taplo"
 Remove-Item $lsp
-[System.Environment]::SetEnvironmentVariable('path', "$root_download\taplo;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+if(Get-Command -Name taplo -ErrorAction SilentlyContinue){
+  Write-Host "taplo exist in path"
+}else{
+  [System.Environment]::SetEnvironmentVariable('path', "$root_download\taplo;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+}
 ```
 
 ### Powershell Service Editor
